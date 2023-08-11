@@ -36,6 +36,7 @@ namespace LMSApi.Controllers
         [HttpGet("GetAllCourse")]
         public ActionResult<Response<List<COURSE>>> GetCourse(string CREATED_BY)
         {
+            //test
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourse(CREATED_BY)));
         }
 
