@@ -150,7 +150,7 @@ namespace LMSApi.Repository
         }
 
 
-        public List<COURSE> GetSearch(string dbConn, string COURSE_NAME, int NO_OF_MODULES, string CATEGORY, string SUB_CATEGORY, string LEVEL_OF_COURSE, string CREATED_BY)
+        public List<COURSE> GetSearch(string dbConn, string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             try
             {

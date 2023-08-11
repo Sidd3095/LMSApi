@@ -46,7 +46,7 @@ namespace LMSApi.Controllers
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourseId(COURSE_ID)));
         }
         [HttpGet("GetSearchCourse")]
-        public ActionResult<Response<List<COURSE>>> GetSearch(string COURSE_NAME, int NO_OF_MODULES, string CATEGORY, string SUB_CATEGORY, string LEVEL_OF_COURSE, string CREATED_BY)
+        public ActionResult<Response<List<COURSE>>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetSearch(COURSE_NAME, NO_OF_MODULES, CATEGORY, SUB_CATEGORY, LEVEL_OF_COURSE, CREATED_BY)));
         }

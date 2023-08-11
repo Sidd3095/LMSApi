@@ -99,7 +99,7 @@ namespace LMSApi.Services
             return response;
         }
     
-        public Response<List<COURSE>> GetSearch(string COURSE_NAME, int NO_OF_MODULES, string CATEGORY, string SUB_CATEGORY, string LEVEL_OF_COURSE, string CREATED_BY)
+        public Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string ?CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");
 
