@@ -54,6 +54,7 @@ namespace LMSApi.Controllers
         [HttpDelete("DeleteCourseById")]
         public ActionResult<Response<CommonResponse>> DeleteCourse(int COURSE_ID)
         {
+            //test komal
             return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteCourse(COURSE_ID)));
         }
 
