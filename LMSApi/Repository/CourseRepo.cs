@@ -27,6 +27,7 @@ namespace LMSApi.Repository
                  {
                    new SqlParameter("@OPERATION",    SqlDbType.VarChar,50) { Value = "INSERT_COURSE" },
                    new SqlParameter("@COURSE_NAME",   SqlDbType.VarChar,100) { Value = course.COURSE_NAME},
+                            new SqlParameter("@COURSE_ID",   SqlDbType.Int) { Value = course.COURSE_ID},
                    new SqlParameter("@COURSE_DESCRIPTION",   SqlDbType.VarChar, 100) { Value = course.COURSE_DESCRIPTION},
                    new SqlParameter("@NO_OF_MODULES", SqlDbType.Int) { Value = course.NO_OF_MODULES },
                    new SqlParameter("@CATEGORY",      SqlDbType.VarChar, 100) { Value = course.CATEGORY },
