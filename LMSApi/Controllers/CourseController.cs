@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Data;
 using Microsoft.IdentityModel.Tokens;
+using NPOI.SS.Formula.Functions;
 
 namespace LMSApi.Controllers
 {
@@ -69,7 +70,7 @@ namespace LMSApi.Controllers
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourseId(COURSE_ID)));
         }
         [HttpGet("GetSearchCourse")]
-        public ActionResult<Response<List<COURSE>>> GetSearch(string COURSE_NAME, int NO_OF_MODULES, string CATEGORY, string SUB_CATEGORY, string LEVEL_OF_COURSE, string CREATED_BY)
+        public ActionResult<Response<List<COURSE>>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetSearch(COURSE_NAME, NO_OF_MODULES, CATEGORY, SUB_CATEGORY, LEVEL_OF_COURSE, CREATED_BY)));
         }
@@ -81,7 +82,13 @@ namespace LMSApi.Controllers
             return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteCourse(COURSE_ID)));
         }
 
-        [HttpPost("UploadCourse")]
+        [HttpDelete("DeleteModuleById")]
+        public ActionResult<Response<CommonResponse>> DeleteModuleById(int MODULE_ID)
+        {
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteModuleById(MODULE_ID)));
+        }
+        [HttpPost("UploadVideo")]
         public ActionResult<Response<string>> UploadCOURSEFiles(int MODULE_ID, IFormFile file)
         {
             var formFile = Request.Form.Files;
@@ -175,19 +182,23 @@ namespace LMSApi.Controllers
             return response;
         }
 
-
-        [HttpGet("GetThumbnail")]
-        public ActionResult<Response<List<ALL_FILES>>> GetThumbnail(int MODULE_ID)
+        [HttpGet("GetUploadedCourseImgAndVideo")]
+        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int MODULE_ID)
         {
-            string[] array1 = Directory.GetFiles("Uploads/Thumbnail/");
+            string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
+            string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
 
-            List<ALL_FILES> imgFiles = new List<ALL_FILES>();
+
+            List<ALL_FILES> imgFiles = new List<ALL_FILES>();//Thumbnail
+            List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
+
             Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
+            List<string> imgList = imgArray.ToList();
+            List<string> videosList = videoArray.ToList();
 
-            // Get list of files.
-            List<string> filesList = array1.ToList();
 
-            foreach (var file in filesList)
+
+            foreach (var file in imgList)
             {
                 if (file.Contains(MODULE_ID.ToString()))
                 {
@@ -201,6 +212,20 @@ namespace LMSApi.Controllers
 
                 }
             }
+            foreach (var file in videosList)
+            {
+                if (file.Contains(MODULE_ID.ToString()))
+                {
+                    ALL_FILES img = new ALL_FILES();
+                    long length = new System.IO.FileInfo(file).Length / 1024;
+                    img.FILE_NAME = file.Split('/')[2];
+                    img.FILE_SIZE = length.ToString() + "KB";
+                    img.FILE_PATH = file;
+
+                    videoFiles.Add(img);
+
+                }
+            }
 
             if (imgFiles.Count > 0)
             {
@@ -208,6 +233,9 @@ namespace LMSApi.Controllers
                 response.ResponseCode = 200;
                 response.ResponseMessage = "Success";
                 response.Data = imgFiles;
+
+                response.Data1 = videoFiles;
+
             }
             else
             {

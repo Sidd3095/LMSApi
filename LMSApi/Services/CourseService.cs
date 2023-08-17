@@ -103,7 +103,7 @@ namespace LMSApi.Services
             return response;
         }
     
-        public Response<List<COURSE>> GetSearch(string COURSE_NAME, int NO_OF_MODULES, string CATEGORY, string SUB_CATEGORY, string LEVEL_OF_COURSE, string CREATED_BY)
+        public Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string ?CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");
 
@@ -241,6 +241,29 @@ namespace LMSApi.Services
 
         //    return response;
         //}
+        public Response<CommonResponse> DeleteModuleById(int MODULE_ID)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<CommonResponse> response = new Response<CommonResponse>();
+
+            if (MODULE_ID == 0)
+            {
+                response.ResponseCode = 500;
+                response.ResponseMessage = "Please provide MODULE_ID ";
+                return response;
+            }
+
+            DbClientFactory<CourseRepo>.Instance.DeleteModuleById(dbConn, MODULE_ID);
+
+            response.Succeeded = true;
+            response.ResponseMessage = "Module deleted Successfully";
+            response.ResponseCode = 200;
+
+            return response;
+        }
+
+
     }
 }
 
