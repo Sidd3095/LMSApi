@@ -667,10 +667,9 @@ namespace LMSApi.Helpers
                 }
             }
         }
-
         public static void UpdateCourseModule<T>(List<T> list, string TableName, string connString, string[] columns)
         {
-            DataTable dt = new DataTable("INVOICE_CHARGES");
+            DataTable dt = new DataTable("TB_MODULE_MASTER");
             dt = ConvertToDataTable(list);
 
             using (SqlConnection conn = new SqlConnection(connString))
@@ -682,7 +681,7 @@ namespace LMSApi.Helpers
                         conn.Open();
 
                         //Creating temp table on database
-                        command.CommandText = "CREATE TABLE #TmpTable(COURSE_ID int,MODULE_NUMBER int,MODULE_NAME varchar(100), MODULE_DESCRIPTION varchar(250), MODULE_DURATION varchar(100),THUMBNAIL_PATH varchar(250), VIDEO_PATH varchar(250), STATUS bit)";
+                        command.CommandText = "CREATE TABLE #TmpTable(COURSE_ID int, MODULE_NUMBER int,MODULE_NAME varchar(100), MODULE_DESCRIPTION varchar(250), MODULE_DURATION varchar(100),THUMBNAIL_PATH varchar(250), VIDEO_PATH varchar(250), STATUS bit)";
                         command.ExecuteNonQuery();
 
                         //Bulk insert into temp table
@@ -700,7 +699,7 @@ namespace LMSApi.Helpers
 
                         // Updating destination table, and dropping temp table
                         command.CommandTimeout = 300;
-                        command.CommandText = "UPDATE T SET MODULE_NUMBER = Temp.MODULE_NUMBER  , MODULE_NAME = Temp.MODULE_NAME, MODULE_DESCRIPTION = Temp.MODULE_DESCRIPTION, MODULE_DURATION = Temp.MODULE_DURATION, THUMBNAIL_PATH = Temp.THUMBNAIL_PATH, VIDEO_PATH = Temp.VIDEO_PATH, STATUS = Temp.STATUS FROM " + TableName + " T INNER JOIN #TmpTable Temp ON T.COURSE_ID = Temp.COURSE_ID; DROP TABLE #TmpTable;";
+                        command.CommandText = "UPDATE T SET MODULE_NUMBER = Temp.MODULE_NUMBER  , MODULE_NAME = Temp.MODULE_NAME, MODULE_DESCRIPTION = Temp.MODULE_DESCRIPTION, MODULE_DURATION = Temp.MODULE_DURATION, THUMBNAIL_PATH = Temp.THUMBNAIL_PATH, VIDEO_PATH = Temp.VIDEO_PATH, STATUS = Temp.STATUS FROM " + TableName + " T INNER JOIN #TmpTable Temp ON  T.COURSE_ID = Temp.COURSE_ID; DROP TABLE #TmpTable;";
                         command.ExecuteNonQuery();
                     }
                     catch (Exception)
@@ -713,9 +712,102 @@ namespace LMSApi.Helpers
                     }
                 }
             }
-        }
+            }
 
-        public static TData ExtecuteProcedureReturnData<TData>(string connString, string procName,
+            //public static void UpdateCourseModule<T>(List<T> list, string TableName, string connString, string[] columns)
+            //{
+            //    DataTable dt = new DataTable("TB_MODULE_MASTER");
+            //    dt = ConvertToDataTable(list);
+
+            //    using (SqlConnection conn = new SqlConnection(connString))
+            //    {
+            //        using (SqlCommand command = new SqlCommand("", conn))
+            //        {
+            //            try
+            //            {
+            //                conn.Open();
+
+            //                //Creating temp table on database
+            //                command.CommandText = "CREATE TABLE #TmpTable(COURSE_ID int,MODULE_NUMBER int,MODULE_NAME varchar(100), MODULE_DESCRIPTION varchar(250), MODULE_DURATION varchar(100),THUMBNAIL_PATH varchar(250), VIDEO_PATH varchar(250), STATUS bit)";
+            //                command.ExecuteNonQuery();
+
+            //                //Bulk insert into temp table
+            //                using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn))
+            //                {
+            //                    bulkcopy.BulkCopyTimeout = 660;
+            //                    bulkcopy.DestinationTableName = "#TmpTable";
+            //                    foreach (var i in columns)
+            //                    {
+            //                        bulkcopy.ColumnMappings.Add(i, i);
+            //                    }
+            //                    bulkcopy.WriteToServer(dt);
+            //                    bulkcopy.Close();
+            //                }
+
+            //                // Updating destination table, and dropping temp table
+            //                command.CommandTimeout = 300;
+            //                command.CommandText = "UPDATE T SET MODULE_NUMBER = Temp.MODULE_NUMBER  , MODULE_NAME = Temp.MODULE_NAME, MODULE_DESCRIPTION = Temp.MODULE_DESCRIPTION, MODULE_DURATION = Temp.MODULE_DURATION, THUMBNAIL_PATH = Temp.THUMBNAIL_PATH, VIDEO_PATH = Temp.VIDEO_PATH, STATUS = Temp.STATUS FROM " + TableName + " T INNER JOIN #TmpTable Temp ON T.COURSE_ID = Temp.COURSE_ID AND T.MODULE_ID = Temp.MODULE_ID; DROP TABLE #TmpTable;";
+            //                command.ExecuteNonQuery();
+            //            }
+            //            catch (Exception)
+            //            {
+
+            //            }
+            //            finally
+            //            {
+            //                conn.Close();
+            //            }
+            //        }
+            //    }
+            //}
+            //public static void UpdateCourse<T>(List<T> list, string TableName, string connString, string[] columns)
+            //{
+            //    DataTable dt = new DataTable("TB_COURSE_MASTER");
+            //    dt = ConvertToDataTable(list);
+
+            //    using (SqlConnection conn = new SqlConnection(connString))
+            //    {
+            //        using (SqlCommand command = new SqlCommand("", conn))
+            //        {
+            //            try
+            //            {
+            //                conn.Open();
+
+            //                //Creating temp table on database
+            //                command.CommandText = "CREATE TABLE #TmpTable(COURSE_ID int,COURSE_NAME varchar(100),COURSE_DESCRIPTION varchar(100), NO_OF_MODULES int, CATEGORY varchar(100),SUB_CATEGORY varchar(250), LEVEL_OF_COURSE varchar(250), INSTRUCTOR_NAME varchar(250),COURSE_OUTCOME varchar(250),CREATED_BY varchar(250),CREATED_DATE DATETIME,UPDATED_BY varchar(250),UPDATED_DATE DATETIME,STATUS bit)";
+            //                command.ExecuteNonQuery();
+
+            //                //Bulk insert into temp table
+            //                using (SqlBulkCopy bulkcopy = new SqlBulkCopy(conn))
+            //                {
+            //                    bulkcopy.BulkCopyTimeout = 660;
+            //                    bulkcopy.DestinationTableName = "#TmpTable";
+            //                    foreach (var i in columns)
+            //                    {
+            //                        bulkcopy.ColumnMappings.Add(i, i);
+            //                    }
+            //                    bulkcopy.WriteToServer(dt);
+            //                    bulkcopy.Close();
+            //                }
+
+            //                // Updating destination table, and dropping temp table
+            //                command.CommandTimeout = 300;
+            //                command.CommandText = "UPDATE T SET COURSE_NAME = Temp.COURSE_NAME  , COURSE_DESCRIPTION = Temp.COURSE_DESCRIPTION, NO_OF_MODULES = Temp.NO_OF_MODULES, CATEGORY = Temp.CATEGORY, SUB_CATEGORY = Temp.SUB_CATEGORY, LEVEL_OF_COURSE = Temp.LEVEL_OF_COURSE, INSTRUCTOR_NAME = Temp.INSTRUCTOR_NAME, COURSE_OUTCOME = Temp.COURSE_OUTCOME, CREATED_BY = Temp.CREATED_BY, CREATED_DATE = Temp.CREATED_DATE,UPDATED_BY = Temp.UPDATED_BY,  UPDATED_DATE = Temp.UPDATED_DATE, STATUS = Temp.STATUS  FROM " + TableName + " T INNER JOIN #TmpTable Temp ON T.COURSE_ID = Temp.COURSE_ID; DROP TABLE #TmpTable;";
+            //                command.ExecuteNonQuery();
+            //            }
+            //            catch (Exception)
+            //            {
+
+            //            }
+            //            finally
+            //            {
+            //                conn.Close();
+            //            }
+            //        }
+            //    }
+            //}
+
+            public static TData ExtecuteProcedureReturnData<TData>(string connString, string procName,
             Func<SqlDataReader, TData> translator,
             params SqlParameter[] parameters)
         {

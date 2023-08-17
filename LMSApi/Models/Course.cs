@@ -22,10 +22,10 @@ namespace LMSApi.Models
         public string UPDATED_BY { get; set; }
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
-        public List<COURSE_MODULE> MODULE { get; set; } = new List<COURSE_MODULE>();
+        public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
     }
 
-    
+
     public class COURSE_MODULE
     {
         public int MODULE_ID { get; set; }
@@ -38,6 +38,7 @@ namespace LMSApi.Models
         public string VIDEO_PATH { get; set; }
         public bool STATUS { get; set; }
     }
+
 
     //public class CourseGetByID {
     //    public int COURSE_ID { get; set; }

@@ -1,0 +1,832 @@
+	IF(@OPERATION = 'INSERT_INVOICES')
+	BEGIN
+	IF(@INVOICE_ID = 0)
+	BEGIN
+	INSERT INTO TB_INVOICE2
+		(
+			INVOICE_NO	,			
+			INVOICE_TYPE,			
+			BILL_TO,			
+			BILL_FROM,				
+			SHIPPER_NAME,
+			CONSIGNEE_NAME,
+			PAYMENT_TERM,			
+			BL_NO,				
+			AGENT_NAME,				
+			AGENT_CODE,				
+			CREATED_BY,				
+			UPDATED_BY	,
+			ADDRESS,
+			BRANCH_ID,
+			BANK_ID,
+			INVOICE_DATE,
+			STATUS,
+			CONTAINERS,
+			SHIPPER_REF,
+			REMARKS
+		)
+		VALUES
+		(
+			@INVOICE_NO	,			
+			@INVOICE_TYPE,			
+			@BILL_TO	,			
+			@BILL_FROM	,			
+			@SHIPPER_NAME,
+			@CONSIGNEE_NAME,
+			@PAYMENT_TERM,			
+			@BL_NO	,				
+			@AGENT_NAME	,			
+			@AGENT_CODE,				
+			@CREATED_BY	,			
+			@UPDATED_BY	,
+			@ADDRESS,
+			@BRANCH_ID,
+			@BANK_ID,
+			@INVOICE_DATE,
+			@STATUS,
+			@CONTAINERS,
+			@SHIPPER_REF,
+			@REMARKS
+		)
+	SELECT SCOPE_IDENTITY()
+	END
+	ELSE
+	BEGIN
+		UPDATE TB_INVOICE2 SET		
+			BILL_TO = @BILL_TO,														
+			ADDRESS = @ADDRESS,
+			BRANCH_ID = @BRANCH_ID,
+			CONTAINERS = @CONTAINERS,
+			SHIPPER_REF = @SHIPPER_REF,
+			REMARKS = @REMARKS
+		WHERE
+			ID = @INVOICE_ID
+
+		SELECT 'NULL'
+	END
+	END
+
+
+
+
+ALTER PROCEDURE [dbo].[SP_CRUD_INVOICE]
+	-- Add the parameters for the stored procedure here
+	@OPERATION			VARCHAR(50) = NULL,
+	@PORT				VARCHAR(100) = NULL,
+	@ORG_CODE			VARCHAR(50) = NULL,
+	@BL_NO				VARCHAR(100) = NULL,
+	@FROMDATE			DATETIME = NULL,
+	@TODATE				DATETIME = NULL,
+	@INVOICE_NO			VARCHAR(100) = NULL,
+	@INVOICE_ID			INT = NULL,
+	@ID					INT	= NULL,
+	@INVOICE_TYPE		VARCHAR(50) = NULL,
+	@BILL_TO			VARCHAR(255) = NULL,
+	@BILL_FROM			VARCHAR(255) = NULL,
+	@SHIPPER_NAME		VARCHAR(255) = NULL,
+	@CONSIGNEE_NAME		VARCHAR(255) = NULL,
+	@PAYMENT_TERM		VARCHAR(50) = NULL,
+	@AGENT_NAME			VARCHAR(50) = NULL,
+	@AGENT_CODE			VARCHAR(50) = NULL,
+	@CREATED_BY			VARCHAR(50) = NULL,
+	@UPDATED_BY			VARCHAR(50) = NULL,
+	@STATUS				VARCHAR(50)	= NULL,
+	@ADDRESS			VARCHAR(MAX)	= NULL,
+	@BRANCH_ID			INT = NULL,
+	@BANK_ID			INT = NULL,
+	@INVOICE_DATE		DATETIME	= NULL,
+	@CONTAINERS			VARCHAR(MAX) = NULL,
+	@SHIPPER_REF		VARCHAR(100) = NULL,
+	@REMARKS			VARCHAR(255) = NULL,
+	@CREDIT_NO			VARCHAR(100) = NULL,
+	@INVOICE_NOLIST		VARCHAR(255) = NULL
+
+
+
+
+
+
+=---------------SERVICE----------------------------
+
+  //    public Response<CommonResponse> InsertCourse(RootObject<COURSE> request)
+        //    {
+        //        string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //        DbClientFactory<CourseRepo>.Instance.InsertCourse(dbConn, request);
+
+        //        Response<CommonResponse> response = new Response<CommonResponse>();
+        //        response.Succeeded = true;
+        //        response.ResponseMessage = "Course saved Successfully.";
+        //        response.ResponseCode = 200;
+
+        //        return response;
+        //    }
+        //    public Response<List<COURSE>>GetCourse(RootObject<CourseGetByID> request)
+        //    {
+        //        string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //        Response<List<COURSE>> response = new Response<List<COURSE>>();
+        //        var data = DbClientFactory<CourseRepo>.Instance.GetCourse(dbConn, request);
+
+        //        if (data.Count > 0)
+        //        {
+        //            response.Succeeded = true;
+        //            response.ResponseCode = 200;
+        //            response.ResponseMessage = "Success";
+        //            response.Data = data;
+        //        }
+        //        else
+        //        {
+        //            response.Succeeded = false;
+        //            response.ResponseCode = 500;
+        //            response.ResponseMessage = "No Data";
+
+        //        }
+        //        return response;
+        //    }
+        //}
+
+
+-------------------------CONTROLLER------------------------------
+
+
+ //[HttpPost("InsertCourse")]
+        //public ActionResult<Response<CommonResponse>> InsertCourse(RootObject<COURSE> request)
+        //{
+        //    return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourse(request))));
+        //}
+
+        //[HttpPost("GetCourse")]
+        // public ActionResult<Response<List<COURSE>>>GetCourse(RootObject<CourseGetByID> request)
+        //{
+        //    return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourse(request)));
+        //}
+
+
+-------------------------------ISERVICE-----------------
+       //Response<CommonResponse> InsertCourse(RootObject<COURSE> request);
+
+-------------------COURSEREPO-----------------------
+//public void InsertCourse(string connstring, RootObject<COURSE> course)
+        //{
+        //    try
+        //    {
+
+
+        //        string payload = JsonConvert.SerializeObject(course);
+        //        SqlParameter[] parameters =
+        //         {
+        //           new SqlParameter("@Json",payload)
+
+
+        //         };
+        //        var ID = SqlHelper.ExecuteProcedureReturnString(connstring, "JCRUD_COURSE", parameters);
+
+
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+        //    public List<COURSE>GetCourse(string dbConn, RootObject<CourseGetByID> course)
+        //    {
+        //        try
+        //        {
+        //            string payload = JsonConvert.SerializeObject(course);
+        //            SqlParameter[] parameters =
+        //            {
+
+
+
+
+        //               new SqlParameter("@OPERATION", SqlDbType.NVarChar) { Value = "GetById" },
+        //               new SqlParameter("@COURSE_ID", SqlDbType.Int) { Value = payload}
+
+
+        //             };
+
+        //            DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_COURSE_DETAILS", parameters);
+        //            List<COURSE> response = SqlHelper.CreateListFromTable<COURSE>(dataTable);
+
+
+
+        //            return response;
+
+        //        }
+        //        catch (Exception)
+        //        {
+        //            throw;
+        //        }
+        //    }
+        //}
+
+
+
+
+
+
+
+ALTER PROCEDURE [dbo].[SP_CRUD_COURSE]
+@OPERATION			VARCHAR(100)		=  NULL,
+@COURSE_ID			INT					=  NULL,
+@COURSE_NAME		VARCHAR(200)		=  NULL,
+@COURSE_DESCRIPTION  VARCHAR(100)       =  NULL,
+@NO_OF_MODULES		 INT				=  NULL,
+@CATEGORY		     VARCHAR(200)		=  NULL,
+@SUB_CATEGORY		 VARCHAR(200)		=  NULL,	
+@LEVEL_OF_COURSE     VARCHAR(200)		=  NULL,
+@INSTRUCTOR_NAME     VARCHAR(200)		=  NULL,
+@COURSE_OUTCOME      VARCHAR(200)		=  NULL,
+@CREATED_BY          VARCHAR(200)		=  NULL,
+@CREATED_DATE		DATETIME			=  NULL,	
+@UPDATED_BY			VARCHAR(200)		=  NULL,	
+@UPDATED_DATE		DATETIME			=  NULL,	
+@STATUS				BIT					=  NULL
+
+IF(@@OPTIONS = 'INSERT')
+C:\Users\siddnathm\source\repos\LMSApi\LMSApi\LMSApi.csproj
+
+TB_COURSE_MASTER
+TB_MODULE_MASTER
+
+SELECT 
+TB_COURSE_MASTER.COURSE_NAME, 
+TB_COURSE_MASTER.COURSE_DESCRIPTION , 
+TB_COURSE_MASTER.NO_OF_MODULES, 
+TB_COURSE_MASTER.CATEGORY, 
+TB_COURSE_MASTER.SUB_CATEGORY, 
+TB_COURSE_MASTER.INSTRUCTOR_NAME, 
+TB_COURSE_MASTER.COURSE_OUTCOME, 
+TB_COURSE_MASTER.CREATED_BY, 
+TB_COURSE_MASTER.CREATED_DATE, 
+TB_COURSE_MASTER.UPDATED_BY, 
+TB_COURSE_MASTER.UPDATED_DATE,
+TB_COURSE_MASTER.STATUS,
+ TB_MODULE_MASTER.MODULE_NUMBER, 
+ TB_MODULE_MASTER.MODULE_NAME,
+ TB_MODULE_MASTER.MODULE_DESCRIPTION,
+ TB_MODULE_MASTER.MODULE_DURATION,
+ TB_MODULE_MASTER.THUMBNAIL_PATH,
+ TB_MODULE_MASTER.VIDEO_PATH,
+ TB_MODULE_MASTER.STATUS,
+
+FROM TB_COURSE_MASTER
+
+JOIN TB_MODULE_MASTER ON TB_COURSE_MASTER.COURSE_ID = TB_MODULE_MASTER.COURSE_ID
+WHERE TB_COURSE_MASTER.COURSE_ID = @COURSE_ID;
+
+
+
+		TB_INVOICE2 I LEFT JOIN MST_CUSTOMER_BRANCH B ON I.BRANCH_ID = B.ID
+			 LEFT JOIN MST_CUSTOMER C ON C.CUST_ID = B.CUST_ID
+			 LEFT JOIN TB_BL BL ON BL.BL_NO = I.BL_NO
+,[COURSE_ID]
+      ,[MODULE_NUMBER]
+      ,[MODULE_NAME]
+      ,[MODULE_DESCRIPTION]
+      ,[MODULE_DURATION]
+      ,[THUMBNAIL_PATH]
+      ,[VIDEO_PATH]
+      ,[STATUS]
+
+
+
+
+
+BEGIN
+		SELECT
+			BL_NO,
+			SHIPPER,
+			CONSIGNEE,
+			(SELECT DISTINCT ORG_NAME FROM MST_ORG_LOCATIONS OL LEFT JOIN MST_ORGANISATION O ON O.ORG_CODE = OL.ORG_CODE 
+			CROSS APPLY STRING_SPLIT(ORG_LOC_CODE, ',') WHERE OL.ORG_CODE = @ORG_CODE AND
+			value IN (SELECT value FROM STRING_SPLIT(@PORT, ','))) AS ORG_NAME,
+			(SELECT DISTINCT ORG_ADDRESS1 FROM MST_ORG_LOCATIONS OL LEFT JOIN MST_ORGANISATION O ON O.ORG_CODE = OL.ORG_CODE 
+			CROSS APPLY STRING_SPLIT(ORG_LOC_CODE, ',') WHERE OL.ORG_CODE = @ORG_CODE AND
+			value IN (SELECT value FROM STRING_SPLIT(@PORT, ','))) AS ORG_ADDRESS1
+		FROM 
+			TB_BL
+		WHERE BL_NO = @BL_NO
+
+		SELECT
+			R.CHARGE_CODE,
+			R.CURRENCY,
+			R.PAYMENT_TERM,
+			R.STANDARD_RATE,
+			R.RATE_REQUESTED,
+			R.APPROVED_RATE,
+			C.HSN_CODE,
+			H.RATE,
+			H.IGST,
+			H.CGST,
+			H.SGST,
+			C.CHARGE_TYPE
+		FROM 
+			TB_SRR_RATES R LEFT JOIN MST_CHARGE_MASTER C ON R.CHARGE_CODE = C.CHARGE_NAME LEFT JOIN TB_HSN_MASTER H ON H.HSN_CODE = C.HSN_CODE
+		WHERE
+			RATE_TYPE = 'FREIGHT_CHARGES' AND SRR_NO = (SELECT SRR_NO FROM TB_BL WHERE BL_NO = @BL_NO)
+
+
+
+ELSE
+	BEGIN
+		UPDATE TB_INVOICE2 SET		
+			BILL_TO = @BILL_TO,														
+			ADDRESS = @ADDRESS,
+			BRANCH_ID = @BRANCH_ID,
+			CONTAINERS = @CONTAINERS,
+			SHIPPER_REF = @SHIPPER_REF,
+			REMARKS = @REMARKS
+		WHERE
+			ID = @INVOICE_ID
+
+		SELECT 'NULL'
+
+
+
+
+
+
+{
+ 
+  "coursE_NAME": "string",
+  "coursE_DESCRIPTION": "string",
+  "nO_OF_MODULES": 0,
+  "category": "string",
+  "suB_CATEGORY": "string",
+  "leveL_OF_COURSE": "string",
+  "instructoR_NAME": "string",
+  "coursE_OUTCOME": "string",
+  "createD_BY": "string",
+  "createD_DATE": "2023-08-09T10:13:59.065Z",
+  "updateD_BY": "string",
+  "updateD_DATE": "2023-08-09T10:13:59.065Z",
+  "status": true,
+  "module": [
+    {
+   
+      "coursE_ID": 14,
+      "modulE_NUMBER": 0,
+      "modulE_NAME": "string",
+      "modulE_DESCRIPTION": "string",
+      "modulE_DURATION": "string",
+      "thumbnaiL_PATH": "string",
+      "videO_PATH": "string",
+      "status": true
+    }
+  ]
+}
+
+
+
+{
+    "COURSE_NAME": "Excel",
+    "USER_ID": "komalk0607",
+    "COURSE_DESCRIPTION": "TEST TEST TEST",
+    "NO_OF_MODULES": 2,
+    "CATEGORY": "Microsoft",
+    "SUB_CATEGORY": "Microsoft Office",
+    "LEVEL_OF_COURSE": "Advance",
+    "INSTRUCTOR_NAME": "Komal",
+    "COURSE_OUTCOME": "TEST123",
+    "CREATED_BY": "komalk0607",
+    "CREATED_DATE": "2023-08-07T11:02:46.055Z",
+    "UPDATED_BY": "string",
+    "UPDATED_DATE": "2023-08-07T11:02:46.055Z",
+    "MODULES": [
+        {
+            "MODULE_NAME": "Pivot",
+            "MODULE_NUMBER": 1,
+            "MODULE_DURATION": "1 hr",
+            "MODULE_DESCRIPTION": "test ",
+            "THUMBNAIL_PATH": null,
+            "VIDEO_PATH": null
+        },
+        {
+            "MODULE_NAME": "Macros",
+            "MODULE_NUMBER": 2,
+            "MODULE_DURATION": "2  hrs",
+            "MODULE_DESCRIPTION": "test2122",
+            "THUMBNAIL_PATH": null,
+            "VIDEO_PATH": null
+        }
+    ]
+}
+
+
+
+
+
+
+
+
+
+
+
+
+IF(@OPERATION = 'INSERT_INVOICES')
+	BEGIN
+	IF(@INVOICE_ID = 0)
+	BEGIN
+	INSERT INTO TB_INVOICE2
+		(
+			INVOICE_NO	,			
+			INVOICE_TYPE,			
+			BILL_TO,			
+			BILL_FROM,				
+			SHIPPER_NAME,
+			CONSIGNEE_NAME,
+			PAYMENT_TERM,			
+			BL_NO,				
+			AGENT_NAME,				
+			AGENT_CODE,				
+			CREATED_BY,				
+			UPDATED_BY	,
+			ADDRESS,
+			BRANCH_ID,
+			BANK_ID,
+			INVOICE_DATE,
+			STATUS,
+			CONTAINERS,
+			SHIPPER_REF,
+			REMARKS
+		)
+		VALUES
+		(
+			@INVOICE_NO	,			
+			@INVOICE_TYPE,			
+			@BILL_TO	,			
+			@BILL_FROM	,			
+			@SHIPPER_NAME,
+			@CONSIGNEE_NAME,
+			@PAYMENT_TERM,			
+			@BL_NO	,				
+			@AGENT_NAME	,			
+			@AGENT_CODE,				
+			@CREATED_BY	,			
+			@UPDATED_BY	,
+			@ADDRESS,
+			@BRANCH_ID,
+			@BANK_ID,
+			@INVOICE_DATE,
+			@STATUS,
+			@CONTAINERS,
+			@SHIPPER_REF,
+			@REMARKS
+		)
+	SELECT SCOPE_IDENTITY()
+	END
+	ELSE
+	BEGIN
+		UPDATE TB_INVOICE2 SET		
+			BILL_TO = @BILL_TO,														
+			ADDRESS = @ADDRESS,
+			BRANCH_ID = @BRANCH_ID,
+			CONTAINERS = @CONTAINERS,
+			SHIPPER_REF = @SHIPPER_REF,
+			REMARKS = @REMARKS
+		WHERE
+			ID = @INVOICE_ID
+
+		SELECT 'NULL'
+	END
+	END
+
+
+
+
+{
+  "COURSE_ID":38,
+  "coursE_NAME": "APIII",
+  "coursE_DESCRIPTION": "string",
+  "nO_OF_MODULES": 0,
+  "category": "string",
+  "suB_CATEGORY": "string",
+  "leveL_OF_COURSE": "string",
+  "instructoR_NAME": "string",
+  "coursE_OUTCOME": "string",
+  "createD_BY": "string",
+  "createD_DATE": "2023-08-09T12:05:50.825Z",
+  "updateD_BY": "string",
+  "updateD_DATE": "2023-08-09T12:05:50.825Z",
+  "status": true,
+  "module": [
+    {
+ "COURSE_ID":38,
+"MODULE_ID":40,
+      "modulE_NUMBER": 4,
+      "modulE_NAME": "KOMAL",
+      "modulE_DESCRIPTION": "string",
+      "modulE_DURATION": "string",
+      "thumbnaiL_PATH": "string",
+      "videO_PATH": "string",
+      "status": true
+    },
+  {
+      "COURSE_ID":38,
+      "modulE_NUMBER": 4,
+      "modulE_NAME": "WERRWER",
+      "modulE_DESCRIPTION": "string",
+      "modulE_DURATION": "string",
+      "thumbnaiL_PATH": "string",
+      "videO_PATH": "string",
+      "status": true
+    }
+  ]
+}
+
+
+
+
+	ELSE
+								BEGIN
+									UPDATE TB_COURSE_MASTER SET		
+										COURSE_NAME = @COURSE_NAME,
+										COURSE_DESCRIPTION = @COURSE_DESCRIPTION,
+										NO_OF_MODULES = @NO_OF_MODULES,
+										CATEGORY = @CATEGORY,
+										SUB_CATEGORY = @SUB_CATEGORY,
+										LEVEL_OF_COURSE = @LEVEL_OF_COURSE,
+										INSTRUCTOR_NAME = @INSTRUCTOR_NAME,
+										COURSE_OUTCOME = @COURSE_OUTCOME,
+										CREATED_BY = @CREATED_BY,
+										CREATED_DATE = @CREATED_DATE,
+										UPDATED_BY = @UPDATED_BY,
+										UPDATED_DATE = @UPDATED_DATE,
+										STATUS = @STATUS
+									WHERE
+										COURSE_ID = @COURSE_ID
+										END
+
+
+
+ELSE IF(@OPERATION='DELETE')
+				BEGIN
+					DELETE FROM TB_COURSE_MASTER where COURSE_ID=@COURSE_ID
+					IF(@@ROWCOUNT >0)
+					BEGIN
+					SELECT  'Record Deleted Successfully' AS Message
+					END
+				END
+
+
+
+	
+				ELSE IF(@OPERATION = 'SEARCH_BY_ID')
+				BEGIN
+
+							SELECT 
+							C.COURSE_ID,
+							C.COURSE_NAME, 
+							C.COURSE_DESCRIPTION , 
+							C.NO_OF_MODULES, 
+							C.CATEGORY, 
+							C.SUB_CATEGORY, 
+							C.INSTRUCTOR_NAME, 
+							C.COURSE_OUTCOME, 
+							C.CREATED_BY, 
+							C.CREATED_DATE, 
+							C.UPDATED_BY, 
+							C.UPDATED_DATE,
+							C.STATUS
+									FROM 
+										TB_COURSE_MASTER C
+										WHERE COURSE_ID = @COURSE_ID
+
+						SELECT
+						M.COURSE_ID,
+						M.MODULE_NUMBER, 
+						M.MODULE_NAME,
+						M.MODULE_DESCRIPTION,
+						M.MODULE_DURATION,
+						M.THUMBNAIL_PATH,
+						M.VIDEO_PATH,
+						M.STATUS
+
+				FROM TB_MODULE_MASTER M
+				WHERE M.COURSE_ID = @COURSE_ID;
+				END
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+    "COURSE_NAME": "1",
+    "COURSE_DESCRIPTION": "test",
+    "NO_OF_MODULES": 1,
+    "CATEGORY": "1",
+    "SUB_CATEGORY": "1",
+    "LEVEL_OF_COURSE": "Beginner",
+    "INSTRUCTOR_NAME": "1",
+    "COURSE_OUTCOME": "test",
+    "CREATED_BY": "komalk0607",
+    "CREATED_DATE": "2023-08-07T11:02:46.055Z",
+    "UPDATED_BY": "string",
+    "UPDATED_DATE": "2023-08-07T11:02:46.055Z",
+ "status": true
+    "MODULE": [
+        {
+            "MODULE_NAME": "1",
+            "MODULE_NUMBER": 1,
+            "MODULE_DURATION": "1",
+            "MODULE_DESCRIPTION": "test",
+            "THUMBNAIL_PATH": "",
+            "VIDEO_PATH": "",
+ "status": true
+        }
+    ]
+}
+
+
+
+{
+
+  "coursE_NAME": "string",
+  "coursE_DESCRIPTION": "string",
+  "nO_OF_MODULES": 0,
+  "category": "string",
+  "suB_CATEGORY": "string",
+  "leveL_OF_COURSE": "string",
+  "instructoR_NAME": "string",
+  "coursE_OUTCOME": "string",
+  "createD_BY": "string",
+  "createD_DATE": "2023-08-11T07:14:38.644Z",
+  "updateD_BY": "string",
+  "updateD_DATE": "2023-08-11T07:14:38.644Z",
+  "status": true,
+  "module": [
+    {
+      "modulE_ID": 0,
+      "coursE_ID": 0,
+      "modulE_NUMBER": 0,
+      "modulE_NAME": "string",
+      "modulE_DESCRIPTION": "string",
+      "modulE_DURATION": "string",
+      "thumbnaiL_PATH": "string",
+      "videO_PATH": "string",
+      "status": true
+    }
+  ]
+}
+
+
+					IF(@COURSE_ID = 0)
+					BEGIN
+					INSERT INTO TB_COURSE_MASTER
+						(
+	
+							COURSE_NAME,
+							COURSE_DESCRIPTION,
+							NO_OF_MODULES,
+							CATEGORY,
+							SUB_CATEGORY,
+							LEVEL_OF_COURSE,
+							INSTRUCTOR_NAME,
+							COURSE_OUTCOME,
+							CREATED_BY,
+							CREATED_DATE,
+							UPDATED_BY,
+							UPDATED_DATE,
+							STATUS
+						)
+						VALUES
+						(
+			
+							@COURSE_NAME,
+							@COURSE_DESCRIPTION,
+							@NO_OF_MODULES,
+							@CATEGORY,
+							@SUB_CATEGORY,
+							@LEVEL_OF_COURSE,
+							@INSTRUCTOR_NAME,
+							@COURSE_OUTCOME,
+							@CREATED_BY,
+							GETDATE(),
+							@UPDATED_BY,
+							@UPDATED_DATE,
+							@STATUS
+
+						)
+							SELECT SCOPE_IDENTITY()
+					END		
+					END
+
+
+
+					IF(@MODULE_ID = 0)
+					BEGIN
+					INSERT INTO TB_MODULE_MASTER
+						(
+	
+						COURSE_ID,
+						MODULE_NUMBER, 
+						MODULE_NAME,
+						MODULE_DESCRIPTION,
+						MODULE_DURATION,
+						THUMBNAIL_PATH,
+						VIDEO_PATH,
+						STATUS
+						)
+						VALUES
+						(
+			
+						@COURSE_ID,
+						@MODULE_NUMBER, 
+						@MODULE_NAME,
+						@MODULE_DESCRIPTION,
+						@MODULE_DURATION,
+						@THUMBNAIL_PATH,
+						@VIDEO_PATH,
+						@STATUS
+
+						)
+							SELECT SCOPE_IDENTITY()
+					END		
+					END
+
+
+	delete from [TB_MODULE_MASTER] where COURSE_ID = @COURSE_ID
+
+
+
+
+				IF(@OPERATION = 'INSERT_COURSES')
+						BEGIN
+					INSERT INTO TB_COURSE_MASTER
+						(
+	
+							COURSE_NAME,
+							COURSE_DESCRIPTION,
+							NO_OF_MODULES,
+							CATEGORY,
+							SUB_CATEGORY,
+							LEVEL_OF_COURSE,
+							INSTRUCTOR_NAME,
+							COURSE_OUTCOME,
+							CREATED_BY,
+							CREATED_DATE,
+							UPDATED_BY,
+							UPDATED_DATE,
+							STATUS
+						)
+						VALUES
+						(
+			
+							@COURSE_NAME,
+							@COURSE_DESCRIPTION,
+							@NO_OF_MODULES,
+							@CATEGORY,
+							@SUB_CATEGORY,
+							@LEVEL_OF_COURSE,
+							@INSTRUCTOR_NAME,
+							@COURSE_OUTCOME,
+							@CREATED_BY,
+							GETDATE(),
+							@UPDATED_BY,
+							@UPDATED_DATE,
+							@STATUS
+
+						)
+							SELECT SCOPE_IDENTITY()
+					END		
+
+
+	IF(@OPERATION = 'UPDATE_COURSES')
+	BEGIN
+		UPDATE TB_COURSE_MASTER SET		
+		COURSE_NAME = @COURSE_NAME,
+		COURSE_DESCRIPTION = @COURSE_DESCRIPTION,
+		NO_OF_MODULES = @NO_OF_MODULES,
+		CATEGORY = @CATEGORY,
+		SUB_CATEGORY = @SUB_CATEGORY,
+		LEVEL_OF_COURSE = @LEVEL_OF_COURSE,
+		INSTRUCTOR_NAME = @INSTRUCTOR_NAME,
+		COURSE_OUTCOME = @COURSE_OUTCOME,
+		CREATED_BY = @CREATED_BY,
+		CREATED_DATE = @CREATED_DATE,
+		UPDATED_BY = @UPDATED_BY,
+		UPDATED_DATE = @UPDATED_DATE,
+		STATUS = @STATUS
+		WHERE
+		COURSE_ID = @COURSE_ID
+
+		SELECT 'NULL'
+		END

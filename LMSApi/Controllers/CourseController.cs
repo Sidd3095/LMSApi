@@ -11,6 +11,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace LMSApi.Controllers
 {
@@ -27,11 +29,32 @@ namespace LMSApi.Controllers
             _environment = environment;
         }
 
-        [HttpPost("InsertCourse")]
-        public ActionResult<Response<CommonResponse>> InsertCourse(COURSE request)
-        {
-            return Ok(_icourseservice.InsertCourse(request));
-        }
+        //[HttpPost("InsertCourse")]
+
+        //public ActionResult<Response<CommonResponse>> InsertCourse([FromForm] CourseInsert request, IFormFile file)
+        //{
+        //    var formFile = Request.Form.Files;
+
+        //    string path = Path.Combine(_environment.ContentRootPath, "Uploads", "Thumbnail");
+        //    if (!Directory.Exists(path))
+        //    {
+        //        Directory.CreateDirectory(path);
+        //    }
+
+        //    List<string> uploadedFiles = new List<string>();
+        //    foreach (IFormFile postedFile in formFile)
+        //    {
+        //        string fileName = Path.GetFileName(1 + "_" + postedFile.FileName);
+        //        using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+        //        {
+        //            postedFile.CopyTo(stream);
+        //            uploadedFiles.Add(fileName);
+        //        }
+        //    }
+
+        //    return Ok(_icourseservice.InsertCourse(request.Course, request.Module));
+        //}
+
 
         [HttpGet("GetAllCourse")]
         public ActionResult<Response<List<COURSE>>> GetCourse(string CREATED_BY)
@@ -59,7 +82,7 @@ namespace LMSApi.Controllers
         }
 
         [HttpPost("UploadCourse")]
-        public ActionResult<Response<string>> UploadCOURSEFiles(int COURSE_ID, IFormFile file)
+        public ActionResult<Response<string>> UploadCOURSEFiles(int MODULE_ID, IFormFile file)
         {
             var formFile = Request.Form.Files;
 
@@ -72,7 +95,7 @@ namespace LMSApi.Controllers
             List<string> uploadedFiles = new List<string>();
             foreach (IFormFile postedFile in formFile)
             {
-                string fileName = Path.GetFileName(COURSE_ID + "_" + postedFile.FileName);
+                string fileName = Path.GetFileName(MODULE_ID + "_" + postedFile.FileName);
                 using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
                 {
                     postedFile.CopyTo(stream);
@@ -85,7 +108,7 @@ namespace LMSApi.Controllers
         }
 
         [HttpGet("GetUploadCourse")]
-        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int COURSE_ID)
+        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int MODULE_ID)
         {
             string[] array1 = Directory.GetFiles("Uploads/CourseFiles/");
 
@@ -97,7 +120,7 @@ namespace LMSApi.Controllers
 
             foreach (var file in filesList)
             {
-                if (file.Contains(COURSE_ID.ToString()))
+                if (file.Contains(MODULE_ID.ToString()))
                 {
                     ALL_FILES img = new ALL_FILES();
                     long length = new System.IO.FileInfo(file).Length / 1024;
@@ -127,7 +150,7 @@ namespace LMSApi.Controllers
         }
 
         [HttpPost("UploadThumbnail")]
-        public ActionResult<Response<string>> UploadThumbnail(int COURSE_ID, IFormFile file)
+        public ActionResult<Response<string>> UploadThumbnail(int MODULE_ID, IFormFile file)
         {
             var formFile = Request.Form.Files;
 
@@ -140,7 +163,7 @@ namespace LMSApi.Controllers
             List<string> uploadedFiles = new List<string>();
             foreach (IFormFile postedFile in formFile)
             {
-                string fileName = Path.GetFileName(COURSE_ID + "_" + postedFile.FileName);
+                string fileName = Path.GetFileName(MODULE_ID + "_" + postedFile.FileName);
                 using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
                 {
                     postedFile.CopyTo(stream);
@@ -154,7 +177,7 @@ namespace LMSApi.Controllers
 
 
         [HttpGet("GetThumbnail")]
-        public ActionResult<Response<List<ALL_FILES>>> GetThumbnail(int COURSE_ID)
+        public ActionResult<Response<List<ALL_FILES>>> GetThumbnail(int MODULE_ID)
         {
             string[] array1 = Directory.GetFiles("Uploads/Thumbnail/");
 
@@ -166,7 +189,7 @@ namespace LMSApi.Controllers
 
             foreach (var file in filesList)
             {
-                if (file.Contains(COURSE_ID.ToString()))
+                if (file.Contains(MODULE_ID.ToString()))
                 {
                     ALL_FILES img = new ALL_FILES();
                     long length = new System.IO.FileInfo(file).Length / 1024;
@@ -195,5 +218,95 @@ namespace LMSApi.Controllers
             return response;
         }
 
+        [HttpPost("insertCourse")]
+        public ActionResult<Response<CommonResponse>> InsertCourses()
+        {
+             var formCollection = Request.Form;
+            string payload = formCollection["payload"];
+            var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
+
+           List<int> res = (_icourseservice.InsertCourses(data));
+        
+                if (res != null)
+            {
+                var formFile = Request.Form.Files;
+
+                string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
+             
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                List<string> uploadedFiles = new List<string>();
+                foreach(var i in res)
+                {
+                    foreach (IFormFile postedFile in formFile)
+                    {
+                        string fileName = Path.GetFileName(i + "_" + postedFile.FileName);
+                        string filePathToCheck = Path.Combine(path, fileName);
+
+                        if (!System.IO.File.Exists(filePathToCheck))
+                        {
+                            using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                            {
+                                postedFile.CopyTo(stream);
+                                uploadedFiles.Add(fileName);
+                            }
+                        }
+
+                    }
+                }
+              
+                Response<string> response = new Response<string>();
+                {
+                    response.Succeeded = true;
+                    response.ResponseCode = 200;
+                    response.ResponseMessage = "Success";
+
+                };
+                return Ok(res);
+
+            }
+            else
+            {
+                Response<string> response = new Response<string>();
+                {
+                    response.Succeeded = false;
+                    response.ResponseCode = 500;
+                    response.ResponseMessage = "Insertion Failed";
+
+                };
+                return BadRequest(response);
+
+            }
+
+            //return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourses(jsoOaylo))));
+        }
+
+
+        //[HttpPost("inserCourse")]
+        //public ActionResult<Response<CommonResponse>> insertCourse(COURSE request)
+        //{
+        //    return Ok(_icourseservice.insertCourse(request));
+        //}
+
+        //[HttpPost("insermodule")]
+        //public ActionResult<Response<CommonResponse>> insertModule(COURSE_MODULE request)
+        //{
+        //    return Ok(_icourseservice.insertModule(request));
+        //}
+
+        //[HttpPost("updateCourse")]
+        //public ActionResult<Response<CommonResponse>> updateCourse(COURSE request)
+        //{
+        //    return Ok(_icourseservice.updateCourse(request));
+        //}
+
+        //[HttpPost("Deletemodule")]
+        //public ActionResult<Response<CommonResponse>> DeleteModule(int MODULE_ID))
+        //{
+        //    return Ok(_icourseservice.DeleteModule(request));
+        //}
     }
 }

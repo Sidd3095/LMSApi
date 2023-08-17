@@ -11,6 +11,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Asn1.Ocsp;
 using Microsoft.IdentityModel.Tokens;
+using NPOI.POIFS.Crypt.Dsig;
+using System.Data;
+using NPOI.SS.Formula.Functions;
+using System.Reflection;
 
 namespace LMSApi.Services
 {
@@ -21,19 +25,19 @@ namespace LMSApi.Services
         {
             _config = config;
         }
-        public Response<string> InsertCourse(COURSE request)
-        {
-            string dbConn = _config.GetConnectionString("ConnectionString");
+        //public Response<string> InsertCourse(COURSE request, COURSE_MODULE module)
+        //{
+        //    string dbConn = _config.GetConnectionString("ConnectionString");
 
-            var ID = DbClientFactory<CourseRepo>.Instance.InsertCourse(dbConn, request);
+        //    var ID = DbClientFactory<CourseRepo>.Instance.InsertCourse(dbConn, request, module);
 
-            Response<string> response = new Response<string>();
-            response.Succeeded = true;
-            response.ResponseMessage = "Course Saved Successfully !";
-            response.ResponseCode = 200;
-            response.Data = ID;
-            return response;
-        }
+        //    Response<string> response = new Response<string>();
+        //    response.Succeeded = true;
+        //    response.ResponseMessage = "Course Saved Successfully !";
+        //    response.ResponseCode = 200;
+        //    response.Data = ID;
+        //    return response;
+        //}
 
 
         public Response<List<COURSE>> GetCourse(string CREATED_BY)
@@ -84,7 +88,7 @@ namespace LMSApi.Services
 
                 if (data.Tables.Contains("Table1"))
                 {
-                    course.MODULE = CourseRepo.GetListFromDataSet<COURSE_MODULE>(data.Tables[1]);
+                    course.MODULES = CourseRepo.GetListFromDataSet<COURSE_MODULE>(data.Tables[1]);
                 }
                 response.Data = course;
             }
@@ -144,6 +148,99 @@ namespace LMSApi.Services
 
             return response;
         }
+
+        public List<int> InsertCourses(RootObject<COURSE> request)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+            List<int> moduleIds = new List<int>();
+            //int ModuleId=0;
+            var data = DbClientFactory<CourseRepo>.Instance.InsertCourses(dbConn, request);
+             Response<int> response = new Response<int>();
+            if ((data != null) && (data.Tables[0].Rows.Count > 0))
+            {
+                foreach (DataRow row in data.Tables["Table1"].Rows)
+                {
+                    int moduleId = (int)row["MODULE_ID"];
+                    moduleIds.Add(moduleId);
+                }
+
+
+                //ModuleId = (int)data.Tables["Table1"].Rows[0]["MODULE_ID"];
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";     
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+            return moduleIds;
+        }
+
+        //public Response<string> insertCourse(COURSE request)
+        //{
+        //    string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //    var ID = DbClientFactory<CourseRepo>.Instance.insertCourse(dbConn, request);
+
+        //    Response<string> response = new Response<string>();
+        //    response.Succeeded = true;
+        //    response.ResponseMessage = "Course Saved Successfully !";
+        //    response.ResponseCode = 200;
+        //    response.Data = ID;
+        //    return response;
+        //}
+        //public Response<string> updateCourse(COURSE request)
+        //{
+        //    string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //    Response<string> response = new Response<string>();
+        //    DbClientFactory<CourseRepo>.Instance.updateCourse(dbConn, request);
+
+        //    response.Succeeded = true;
+        //    response.ResponseMessage =" updated Successfully.";
+        //    response.ResponseCode = 200;
+
+        //    return response;
+        //}
+
+        //public Response<string> insertModule(COURSE_MODULE request)
+        //{
+        //    string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //    var ID = DbClientFactory<CourseRepo>.Instance.insertModule(dbConn, request);
+
+        //    Response<string> response = new Response<string>();
+        //    response.Succeeded = true;
+        //    response.ResponseMessage = "Module Saved Successfully !";
+        //    response.ResponseCode = 200;
+        //    response.Data = ID;
+        //    return response;
+        //}
+
+        //public Response<CommonResponse> DeleteModule(int MODULE_ID)
+        //{
+        //    string dbConn = _config.GetConnectionString("ConnectionString");
+
+        //    Response<CommonResponse> response = new Response<CommonResponse>();
+
+        //    if (MODULE_ID == 0)
+        //    {
+        //        response.ResponseCode = 500;
+        //        response.ResponseMessage = "Please provide MODULE_ID ";
+        //        return response;
+        //    }
+
+        //    DbClientFactory<CourseRepo>.Instance.DeleteModule(dbConn, MODULE_ID);
+
+        //    response.Succeeded = true;
+        //    response.ResponseMessage = "module deleted Successfully.";
+        //    response.ResponseCode = 200;
+
+        //    return response;
+        //}
     }
 }
 

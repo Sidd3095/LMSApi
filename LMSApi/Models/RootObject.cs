@@ -6,5 +6,6 @@
         public string OPERATION { get; set; }
         public string USER_ID { get; set; }
         public List<T> VALUES { get; set; }
+        //public List<T> MODULES { get; set; }    
     }
 }
