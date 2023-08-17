@@ -88,7 +88,7 @@ namespace LMSApi.Repository
                         tbl.Rows.Add(dr);
                     }
 
-                    SqlHelper.ExecuteProcedureBulkInsert(connstring, tbl, "TB_MODULE_MASTER", columns);
+                     SqlHelper.ExecuteProcedureBulkInsert(connstring, tbl, "TB_MODULE_MASTER", columns);
 
                    
                 }
@@ -190,7 +190,16 @@ namespace LMSApi.Repository
 
             SqlHelper.ExecuteProcedureReturnString(dbConn, "SP_CRUD_COURSE", parameters);
         }
+        public void DeleteModuleById(string dbConn, int MODULE_ID)
+        {
+            SqlParameter[] parameters =
+            {
+               new SqlParameter("@OPERATION", SqlDbType.VarChar, 255) { Value = "DELETE_MODULE_BY_ID" },
+               new SqlParameter("@MODULE_ID", SqlDbType.Int) { Value = MODULE_ID }
+            };
 
+            SqlHelper.ExecuteProcedureReturnString(dbConn, "SP_CRUD_COURSE", parameters);
+        }
         public static T GetSingleDataFromDataSet<T>(DataTable dataTable) where T : new()
         {
             return SqlHelper.CreateItemFromRow<T>(dataTable.Rows[0]);

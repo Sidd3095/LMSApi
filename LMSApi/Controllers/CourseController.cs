@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using NPOI.SS.Formula.Functions;
 
 namespace LMSApi.Controllers
 {
@@ -32,6 +33,25 @@ namespace LMSApi.Controllers
         {
             return Ok(_icourseservice.InsertCourse(request));
         }
+        [HttpPost("InsertCourse1")]
+        //public ActionResult<Response<CommonResponse>> InsertCourse1()
+        //{
+
+
+        //    //    var a = JsonConvert.DeserializeObject(jsonString);
+        //    var formCollection = Request.Form;
+        //    IFormFileCollection file = Request.Form.Files;
+        //    // Accessing form valuess
+
+          
+        //    string payload = formCollection["payload"];
+        //    var files = formCollection["images"];
+        //    var videos = formCollection["videos"];
+        //    var jsoOaylo = JsonConvert.DeserializeObject<COURSE>(payload);
+
+        //    return Ok();
+
+        //}
 
         [HttpGet("GetAllCourse")]
         public ActionResult<Response<List<COURSE>>> GetCourse(string CREATED_BY)
@@ -58,8 +78,14 @@ namespace LMSApi.Controllers
             return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteCourse(COURSE_ID)));
         }
 
-        [HttpPost("UploadCourse")]
-        public ActionResult<Response<string>> UploadCOURSEFiles(int COURSE_ID, IFormFile file)
+        [HttpDelete("DeleteModuleById")]
+        public ActionResult<Response<CommonResponse>> DeleteModuleById(int MODULE_ID)
+        {
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteModuleById(MODULE_ID)));
+        }
+        [HttpPost("UploadVideo")]
+        public ActionResult<Response<string>> UploadCOURSEFiles(int MODULE_ID, IFormFile file)
         {
             var formFile = Request.Form.Files;
 
@@ -72,7 +98,7 @@ namespace LMSApi.Controllers
             List<string> uploadedFiles = new List<string>();
             foreach (IFormFile postedFile in formFile)
             {
-                string fileName = Path.GetFileName(COURSE_ID + "_" + postedFile.FileName);
+                string fileName = Path.GetFileName(MODULE_ID + "_" + postedFile.FileName);
                 using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
                 {
                     postedFile.CopyTo(stream);
@@ -84,50 +110,10 @@ namespace LMSApi.Controllers
             return response;
         }
 
-        [HttpGet("GetUploadCourse")]
-        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int COURSE_ID)
-        {
-            string[] array1 = Directory.GetFiles("Uploads/CourseFiles/");
-
-            List<ALL_FILES> imgFiles = new List<ALL_FILES>();
-            Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
-
-            // Get list of files.
-            List<string> filesList = array1.ToList();
-
-            foreach (var file in filesList)
-            {
-                if (file.Contains(COURSE_ID.ToString()))
-                {
-                    ALL_FILES img = new ALL_FILES();
-                    long length = new System.IO.FileInfo(file).Length / 1024;
-                    img.FILE_NAME = file.Split('/')[2];
-                    img.FILE_SIZE = length.ToString() + "KB";
-                    img.FILE_PATH = file;
-
-                    imgFiles.Add(img);
-
-                }
-            }
-
-            if (imgFiles.Count > 0)
-            {
-                response.Succeeded = true;
-                response.ResponseCode = 200;
-                response.ResponseMessage = "Success";
-                response.Data = imgFiles;
-            }
-            else
-            {
-                response.Succeeded = false;
-                response.ResponseCode = 500;
-                response.ResponseMessage = "No Data";
-            }
-            return response;
-        }
+       
 
         [HttpPost("UploadThumbnail")]
-        public ActionResult<Response<string>> UploadThumbnail(int COURSE_ID, IFormFile file)
+        public ActionResult<Response<string>> UploadThumbnail(int MODULE_ID, IFormFile file)
         {
             var formFile = Request.Form.Files;
 
@@ -140,7 +126,7 @@ namespace LMSApi.Controllers
             List<string> uploadedFiles = new List<string>();
             foreach (IFormFile postedFile in formFile)
             {
-                string fileName = Path.GetFileName(COURSE_ID + "_" + postedFile.FileName);
+                string fileName = Path.GetFileName(MODULE_ID + "_" + postedFile.FileName);
                 using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
                 {
                     postedFile.CopyTo(stream);
@@ -152,21 +138,25 @@ namespace LMSApi.Controllers
             return response;
         }
 
-
-        [HttpGet("GetThumbnail")]
-        public ActionResult<Response<List<ALL_FILES>>> GetThumbnail(int COURSE_ID)
+        [HttpGet("GetUploadedCourseImgAndVideo")]
+        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int MODULE_ID)
         {
-            string[] array1 = Directory.GetFiles("Uploads/Thumbnail/");
+            string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
+            string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
 
-            List<ALL_FILES> imgFiles = new List<ALL_FILES>();
+
+            List<ALL_FILES> imgFiles = new List<ALL_FILES>();//Thumbnail
+            List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
+
             Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
+            List<string> imgList = imgArray.ToList();
+            List<string> videosList = videoArray.ToList();
 
-            // Get list of files.
-            List<string> filesList = array1.ToList();
 
-            foreach (var file in filesList)
+
+            foreach (var file in imgList)
             {
-                if (file.Contains(COURSE_ID.ToString()))
+                if (file.Contains(MODULE_ID.ToString()))
                 {
                     ALL_FILES img = new ALL_FILES();
                     long length = new System.IO.FileInfo(file).Length / 1024;
@@ -178,6 +168,20 @@ namespace LMSApi.Controllers
 
                 }
             }
+            foreach (var file in videosList)
+            {
+                if (file.Contains(MODULE_ID.ToString()))
+                {
+                    ALL_FILES img = new ALL_FILES();
+                    long length = new System.IO.FileInfo(file).Length / 1024;
+                    img.FILE_NAME = file.Split('/')[2];
+                    img.FILE_SIZE = length.ToString() + "KB";
+                    img.FILE_PATH = file;
+
+                    videoFiles.Add(img);
+
+                }
+            }
 
             if (imgFiles.Count > 0)
             {
@@ -185,6 +189,9 @@ namespace LMSApi.Controllers
                 response.ResponseCode = 200;
                 response.ResponseMessage = "Success";
                 response.Data = imgFiles;
+
+                response.Data1 = videoFiles;
+
             }
             else
             {
@@ -194,6 +201,48 @@ namespace LMSApi.Controllers
             }
             return response;
         }
+
+        //[HttpGet("GetThumbnail")]
+        //public ActionResult<Response<List<ALL_FILES>>> GetThumbnail(int COURSE_ID)
+        //{
+        //    string[] array1 = Directory.GetFiles("Uploads/Thumbnail/");
+
+        //    List<ALL_FILES> imgFiles = new List<ALL_FILES>();
+        //    Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
+
+        //    // Get list of files.
+        //    List<string> filesList = array1.ToList();
+
+        //    foreach (var file in filesList)
+        //    {
+        //        if (file.Contains(COURSE_ID.ToString()))
+        //        {
+        //            ALL_FILES img = new ALL_FILES();
+        //            long length = new System.IO.FileInfo(file).Length / 1024;
+        //            img.FILE_NAME = file.Split('/')[2];
+        //            img.FILE_SIZE = length.ToString() + "KB";
+        //            img.FILE_PATH = file;
+
+        //            imgFiles.Add(img);
+
+        //        }
+        //    }
+
+        //    if (imgFiles.Count > 0)
+        //    {
+        //        response.Succeeded = true;
+        //        response.ResponseCode = 200;
+        //        response.ResponseMessage = "Success";
+        //        response.Data = imgFiles;
+        //    }
+        //    else
+        //    {
+        //        response.Succeeded = false;
+        //        response.ResponseCode = 500;
+        //        response.ResponseMessage = "No Data";
+        //    }
+        //    return response;
+        //}
 
     }
 }

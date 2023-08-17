@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Org.BouncyCastle.Crypto.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,8 +38,20 @@ namespace LMSApi.Models
         public string THUMBNAIL_PATH { get; set; }
         public string VIDEO_PATH { get; set; }
         public bool STATUS { get; set; }
+        public int SEQ_NO { get; set; }
+
+        //public IFormFile file { get; set; }
     }
 
+    //public class FormData { 
+    //    string payload { get; set; }
+    //    List<Arrfile>? files { get; set; }
+    //}
+
+    //public class Arrfile {
+    //    int index { get; set; }
+    //    IFormFile? Ifile { get; set; }
+    //}
     //public class CourseGetByID {
     //    public int COURSE_ID { get; set; }
     //}

@@ -144,6 +144,29 @@ namespace LMSApi.Services
 
             return response;
         }
+        public Response<CommonResponse> DeleteModuleById(int MODULE_ID)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<CommonResponse> response = new Response<CommonResponse>();
+
+            if (MODULE_ID == 0)
+            {
+                response.ResponseCode = 500;
+                response.ResponseMessage = "Please provide MODULE_ID ";
+                return response;
+            }
+
+            DbClientFactory<CourseRepo>.Instance.DeleteModuleById(dbConn, MODULE_ID);
+
+            response.Succeeded = true;
+            response.ResponseMessage = "Module deleted Successfully";
+            response.ResponseCode = 200;
+
+            return response;
+        }
+
+
     }
 }
 

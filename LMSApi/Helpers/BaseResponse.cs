@@ -29,6 +29,7 @@ namespace LMSApi.Helpers
         public int ResponseCode { get; set; }
         public string ResponseMessage { get; set; }
         public T Data { get; set; }
+        public T Data1 { get; set; }
     }
 
     public class PagedResponse<T> : Response<T>
