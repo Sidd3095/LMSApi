@@ -183,7 +183,7 @@ namespace LMSApi.Controllers
         }
 
         [HttpGet("GetUploadedCourseImgAndVideo")]
-        public ActionResult<Response<List<ALL_FILES>>> Getcourses(int MODULE_ID)
+        public ActionResult<Response<List<ALL_FILES>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
         {
             string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
             string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
@@ -249,7 +249,7 @@ namespace LMSApi.Controllers
         [HttpPost("insertCourse")]
         public ActionResult<Response<CommonResponse>> InsertCourses()
         {
-             var formCollection = Request.Form;
+            var formCollection = Request.Form;
             string payload = formCollection["payload"];
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
@@ -257,34 +257,34 @@ namespace LMSApi.Controllers
         
                 if (res != null)
             {
-                var formFile = Request.Form.Files;
+                    var formFile = Request.Form.Files;
 
-                string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
-             
-                if (!Directory.Exists(path))
-                {
-                    Directory.CreateDirectory(path);
-                }
+                    string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
 
-                List<string> uploadedFiles = new List<string>();
-                foreach(var i in res)
-                {
-                    foreach (IFormFile postedFile in formFile)
+                    if (!Directory.Exists(path))
                     {
-                        string fileName = Path.GetFileName(i + "_" + postedFile.FileName);
-                        string filePathToCheck = Path.Combine(path, fileName);
-
-                        if (!System.IO.File.Exists(filePathToCheck))
-                        {
-                            using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
-                            {
-                                postedFile.CopyTo(stream);
-                                uploadedFiles.Add(fileName);
-                            }
-                        }
-
+                        Directory.CreateDirectory(path);
                     }
-                }
+
+                    List<string> uploadedFiles = new List<string>();
+                foreach(var i in res)
+                    {
+                        foreach (IFormFile postedFile in formFile)
+                        {
+                            string fileName = Path.GetFileName(i + "_" + postedFile.FileName);
+                            string filePathToCheck = Path.Combine(path, fileName);
+
+                            if (!System.IO.File.Exists(filePathToCheck))
+                            {
+                                using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                                {
+                                    postedFile.CopyTo(stream);
+                                    uploadedFiles.Add(fileName);
+                                }
+                            }
+
+                        }
+                    }
               
                 Response<string> response = new Response<string>();
                 {

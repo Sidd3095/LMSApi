@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Crypto.Utilities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace LMSApi.Models
     public class COURSE
     {
         public int COURSE_ID { get; set; }
-       public string COURSE_NAME { get; set; }
+        public string COURSE_NAME { get; set; }
         public string COURSE_DESCRIPTION { get; set; }
         public int NO_OF_MODULES { get; set; }
         public string CATEGORY { get; set; }
@@ -43,10 +44,20 @@ namespace LMSApi.Models
         //public IFormFile file { get; set; }
     }
 
-    //public class FormData { 
-    //    string payload { get; set; }
-    //    List<Arrfile>? files { get; set; }
-    //}
+   //public class FormData
+   // {
+        
+   //     string payload { get; set; }
+        
+   //     IFormFileCollection? images { get; set; }
+
+       
+   //     IFormFileCollection? videos { get; set; }
+   // }
+    //public class IdeaDto{
+    //    IFormFile file { get; set; }
+    //    public string payload { get; set; }
+    //    }
 
     //public class Arrfile {
     //    int index { get; set; }

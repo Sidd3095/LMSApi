@@ -70,6 +70,7 @@ namespace LMSApi
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<ICourseService, CourseService>();
+            services.AddScoped<IQuizService, QuizService>();
             //services.AddTransient<CourseService>();
 
             services.AddAuthentication(options =>
