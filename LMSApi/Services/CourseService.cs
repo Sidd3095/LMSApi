@@ -158,17 +158,23 @@ namespace LMSApi.Services
              Response<int> response = new Response<int>();
             if ((data != null) && (data.Tables[0].Rows.Count > 0))
             {
-                foreach (DataRow row in data.Tables["Table1"].Rows)
+                if (data.Tables.Contains("Table2"))
                 {
-                    int moduleId = (int)row["MODULE_ID"];
-                    moduleIds.Add(moduleId);
+                    if (data.Tables["Table2"].Rows.Count > 0)
+                    {
+                        foreach (DataRow row in data.Tables["Table2"].Rows)
+                        {
+                            int moduleId = (int)row["MODULE_ID"];
+                            moduleIds.Add(moduleId);
+                        }
+                    }
                 }
 
 
                 //ModuleId = (int)data.Tables["Table1"].Rows[0]["MODULE_ID"];
                 response.Succeeded = true;
                 response.ResponseCode = 200;
-                response.ResponseMessage = "Success";     
+                response.ResponseMessage = "Success";
             }
             else
             {
