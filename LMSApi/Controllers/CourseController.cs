@@ -183,7 +183,7 @@ namespace LMSApi.Controllers
         }
 
         [HttpGet("GetUploadedCourseImgAndVideo")]
-        public ActionResult<Response<List<ALL_FILES>>> Getcoursess(int MODULE_ID)
+        public ActionResult<Response<List<ALL_FILES>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
         {
             string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
             string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
