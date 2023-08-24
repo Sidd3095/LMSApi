@@ -185,7 +185,7 @@ namespace LMSApi.Controllers
         [HttpGet("GetUploadedCourseImgAndVideo")]
         public ActionResult<Response<List<ALL_FILES>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
         {
-            string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
+            //string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
             string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
 
 
@@ -193,25 +193,25 @@ namespace LMSApi.Controllers
             List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
 
             Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
-            List<string> imgList = imgArray.ToList();
+            //List<string> imgList = imgArray.ToList();
             List<string> videosList = videoArray.ToList();
 
 
 
-            foreach (var file in imgList)
-            {
-                if (file.Contains(MODULE_ID.ToString()))
-                {
-                    ALL_FILES img = new ALL_FILES();
-                    long length = new System.IO.FileInfo(file).Length / 1024;
-                    img.FILE_NAME = file.Split('/')[2];
-                    img.FILE_SIZE = length.ToString() + "KB";
-                    img.FILE_PATH = file;
+            //foreach (var file in imgList)
+            //{
+            //    if (file.Contains(MODULE_ID.ToString()))
+            //    {
+            //        ALL_FILES img = new ALL_FILES();
+            //        long length = new System.IO.FileInfo(file).Length / 1024;
+            //        img.FILE_NAME = file.Split('/')[2];
+            //        img.FILE_SIZE = length.ToString() + "KB";
+            //        img.FILE_PATH = file;
 
-                    imgFiles.Add(img);
+            //        imgFiles.Add(img);
 
-                }
-            }
+            //    }
+            //}
             foreach (var file in videosList)
             {
                 if (file.Contains(MODULE_ID.ToString()))
@@ -227,14 +227,14 @@ namespace LMSApi.Controllers
                 }
             }
 
-            if (imgFiles.Count > 0)
+            if (videoFiles.Count > 0)
             {
                 response.Succeeded = true;
                 response.ResponseCode = 200;
                 response.ResponseMessage = "Success";
-                response.Data = imgFiles;
+                response.Data = videoFiles;
 
-                response.Data1 = videoFiles;
+                //response.Data1 = videoFiles;
 
             }
             else
@@ -249,43 +249,53 @@ namespace LMSApi.Controllers
         [HttpPost("insertCourse")]
         public ActionResult<Response<CommonResponse>> InsertCourses()
         {
-             var formCollection = Request.Form;
+            var formCollection = Request.Form;
             string payload = formCollection["payload"];
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
-           List<int> res = (_icourseservice.InsertCourses(data));
-        
-                if (res != null)
+            List<int> res = (_icourseservice.InsertCourses(data));
+
+            if (res != null)
             {
                 var formFile = Request.Form.Files;
 
                 string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
-             
+
                 if (!Directory.Exists(path))
                 {
                     Directory.CreateDirectory(path);
                 }
 
                 List<string> uploadedFiles = new List<string>();
-                foreach(var i in res)
+                for (int i = 0; i < res.Count; i++)
                 {
-                    foreach (IFormFile postedFile in formFile)
+                    data.VALUES[0].MODULES[i].MODULE_ID = res[i];
+                }
+                foreach (var i in data.VALUES[0].MODULES)
+                {
+                    var file = i.FILE_DATA;
+                    foreach (var f in file)
                     {
-                        string fileName = Path.GetFileName(i + "_" + postedFile.FileName);
-                        string filePathToCheck = Path.Combine(path, fileName);
-
-                        if (!System.IO.File.Exists(filePathToCheck))
+                        var d = f.name;
+                        foreach (IFormFile postedFile in Request.Form.Files)
                         {
-                            using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                            if (d == postedFile.FileName && f.module == i.MODULE_NUMBER)
                             {
-                                postedFile.CopyTo(stream);
-                                uploadedFiles.Add(fileName);
+                                string fileName = Path.GetFileName(i.MODULE_ID + "_" + postedFile.FileName);
+                                string filePathToCheck = Path.Combine(path, fileName);
+
+                                if (!System.IO.File.Exists(filePathToCheck))
+                                {
+                                    using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                                    {
+                                        postedFile.CopyTo(stream);
+                                        uploadedFiles.Add(fileName);
+                                    }
+                                }
                             }
                         }
-
                     }
                 }
-              
                 Response<string> response = new Response<string>();
                 {
                     response.Succeeded = true;
@@ -311,6 +321,7 @@ namespace LMSApi.Controllers
 
             //return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourses(jsoOaylo))));
         }
+
 
 
         //[HttpPost("inserCourse")]

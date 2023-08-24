@@ -1,4 +1,5 @@
-﻿using Org.BouncyCastle.Crypto.Utilities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Org.BouncyCastle.Crypto.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace LMSApi.Models
     public class COURSE
     {
         public int COURSE_ID { get; set; }
-       public string COURSE_NAME { get; set; }
+        public string COURSE_NAME { get; set; }
         public string COURSE_DESCRIPTION { get; set; }
         public int NO_OF_MODULES { get; set; }
         public string CATEGORY { get; set; }
@@ -24,8 +25,12 @@ namespace LMSApi.Models
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
         public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
+        public List<VALUE> VALUES { get; set; } = new List<VALUE>();
+       
+        //public Formarrayquizoption[] formArrayQuizOption { get; set; }
     }
 
+    
 
     public class COURSE_MODULE
     {
@@ -39,14 +44,29 @@ namespace LMSApi.Models
         public string VIDEO_PATH { get; set; }
         public bool STATUS { get; set; }
         public int SEQ_NO { get; set; }
-
-        //public IFormFile file { get; set; }
+        public List<FileData> FILE_DATA = new List<FileData>();
+       //public IFormFile file { get; set; }
     }
+    public class FileData {
 
-    //public class FormData { 
-    //    string payload { get; set; }
-    //    List<Arrfile>? files { get; set; }
-    //}
+        public string name { get; set; }
+        public int module { get; set; }
+    
+    }
+   //public class FormData
+   // {
+        
+   //     string payload { get; set; }
+        
+   //     IFormFileCollection? images { get; set; }
+
+       
+   //     IFormFileCollection? videos { get; set; }
+   // }
+    //public class IdeaDto{
+    //    IFormFile file { get; set; }
+    //    public string payload { get; set; }
+    //    }
 
     //public class Arrfile {
     //    int index { get; set; }

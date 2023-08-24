@@ -361,3 +361,5 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/LMSApi/Uploads/CourseFiles/227_111.mp4
+/LMSApi/Uploads/CourseFiles/225_img2.jpg

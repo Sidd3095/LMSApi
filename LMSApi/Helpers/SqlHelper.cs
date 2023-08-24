@@ -34,6 +34,7 @@ namespace LMSApi.Helpers
             return result;
         }
 
+
         public static void ExecuteProcedureBulkInsert(string connString, DataTable dataTable, string tblName, string[] columns)
         {
             using (var sqlConnection = new SqlConnection(connString))
