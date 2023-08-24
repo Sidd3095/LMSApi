@@ -25,8 +25,12 @@ namespace LMSApi.Models
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
         public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
+        public List<VALUE> VALUES { get; set; } = new List<VALUE>();
+       
+        //public Formarrayquizoption[] formArrayQuizOption { get; set; }
     }
 
+    
 
     public class COURSE_MODULE
     {
@@ -40,10 +44,15 @@ namespace LMSApi.Models
         public string VIDEO_PATH { get; set; }
         public bool STATUS { get; set; }
         public int SEQ_NO { get; set; }
-
-        //public IFormFile file { get; set; }
+        public List<FileData> FILE_DATA = new List<FileData>();
+       //public IFormFile file { get; set; }
     }
+    public class FileData {
 
+        public string name { get; set; }
+        public int module { get; set; }
+    
+    }
    //public class FormData
    // {
         

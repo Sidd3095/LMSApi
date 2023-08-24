@@ -185,7 +185,7 @@ namespace LMSApi.Controllers
         [HttpGet("GetUploadedCourseImgAndVideo")]
         public ActionResult<Response<List<ALL_FILES>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
         {
-            string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
+            //string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
             string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
 
 
@@ -193,25 +193,25 @@ namespace LMSApi.Controllers
             List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
 
             Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
-            List<string> imgList = imgArray.ToList();
+            //List<string> imgList = imgArray.ToList();
             List<string> videosList = videoArray.ToList();
 
 
 
-            foreach (var file in imgList)
-            {
-                if (file.Contains(MODULE_ID.ToString()))
-                {
-                    ALL_FILES img = new ALL_FILES();
-                    long length = new System.IO.FileInfo(file).Length / 1024;
-                    img.FILE_NAME = file.Split('/')[2];
-                    img.FILE_SIZE = length.ToString() + "KB";
-                    img.FILE_PATH = file;
+            //foreach (var file in imgList)
+            //{
+            //    if (file.Contains(MODULE_ID.ToString()))
+            //    {
+            //        ALL_FILES img = new ALL_FILES();
+            //        long length = new System.IO.FileInfo(file).Length / 1024;
+            //        img.FILE_NAME = file.Split('/')[2];
+            //        img.FILE_SIZE = length.ToString() + "KB";
+            //        img.FILE_PATH = file;
 
-                    imgFiles.Add(img);
+            //        imgFiles.Add(img);
 
-                }
-            }
+            //    }
+            //}
             foreach (var file in videosList)
             {
                 if (file.Contains(MODULE_ID.ToString()))
@@ -227,14 +227,14 @@ namespace LMSApi.Controllers
                 }
             }
 
-            if (imgFiles.Count > 0)
+            if (videoFiles.Count > 0)
             {
                 response.Succeeded = true;
                 response.ResponseCode = 200;
                 response.ResponseMessage = "Success";
-                response.Data = imgFiles;
+                response.Data = videoFiles;
 
-                response.Data1 = videoFiles;
+                //response.Data1 = videoFiles;
 
             }
             else
@@ -251,6 +251,7 @@ namespace LMSApi.Controllers
         {
             var formCollection = Request.Form;
             string payload = formCollection["payload"];
+            
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
            List<int> res = (_icourseservice.InsertCourses(data));

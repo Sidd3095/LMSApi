@@ -43,7 +43,7 @@
         public string QUESTION { get; set; }
         //public DateTime ? CREATED_DATE { get; set; }
         //public string CREATED_BY { get; set; }
-        public Formarrayquizoption[] formArrayQuizOption { get; set; }
+        public List<Formarrayquizoption> formArrayQuizOption { get; set; } = new List<Formarrayquizoption>();
     }
 
     public class Formarrayquizoption
