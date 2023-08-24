@@ -92,15 +92,28 @@ namespace LMSApi.Services
                 }
                 if (data.Tables.Contains("Table2"))
                 {
-                    course.VALUES = CourseRepo.GetListFromDataSet<VALUE>(data.Tables[2]);
+
+                    if (data.Tables[2].Rows.Count != 0)
+                    {
+                        course.VALUES = CourseRepo.GetListFromDataSet<VALUE>(data.Tables[2]);
+                    }
                 }
                 if (data.Tables.Contains("Table3"))
+
                 {
-                    var quiz = CourseRepo.GetListFromDataSet<Formarrayquizoption>(data.Tables[3]);
-                    course.VALUES[0].formArrayQuizOption = quiz;
+                    if (data.Tables[3].Rows.Count != 0)
+                    {
+                        var quiz = CourseRepo.GetListFromDataSet<Formarrayquizoption>(data.Tables[3]);
+                        //course.VALUES[0].formArrayQuizOption = quiz;
+
+                        foreach (var question in course.VALUES)
+                        {
+                            question.formArrayQuizOption = quiz.Where(x => x.QUESTION_ID == question.QUESTION_ID).ToList();
+                        }
+                    }
+
                 }
 
-                
                 response.Data = course;
             }
             else
@@ -110,10 +123,9 @@ namespace LMSApi.Services
                 response.ResponseMessage = "No Data";
             }
 
-
             return response;
         }
-    
+
         public Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string ?CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");

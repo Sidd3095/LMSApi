@@ -251,42 +251,51 @@ namespace LMSApi.Controllers
         {
             var formCollection = Request.Form;
             string payload = formCollection["payload"];
-            
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
-           List<int> res = (_icourseservice.InsertCourses(data));
-        
-                if (res != null)
+            List<int> res = (_icourseservice.InsertCourses(data));
+
+            if (res != null)
             {
-                    var formFile = Request.Form.Files;
+                var formFile = Request.Form.Files;
 
-                    string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
+                string path = Path.Combine(_environment.ContentRootPath, "Uploads", "CourseFiles");
 
-                    if (!Directory.Exists(path))
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                List<string> uploadedFiles = new List<string>();
+                for (int i = 0; i < res.Count; i++)
+                {
+                    data.VALUES[0].MODULES[i].MODULE_ID = res[i];
+                }
+                foreach (var i in data.VALUES[0].MODULES)
+                {
+                    var file = i.FILE_DATA;
+                    foreach (var f in file)
                     {
-                        Directory.CreateDirectory(path);
-                    }
-
-                    List<string> uploadedFiles = new List<string>();
-                foreach(var i in res)
-                    {
-                        foreach (IFormFile postedFile in formFile)
+                        var d = f.name;
+                        foreach (IFormFile postedFile in Request.Form.Files)
                         {
-                            string fileName = Path.GetFileName(i + "_" + postedFile.FileName);
-                            string filePathToCheck = Path.Combine(path, fileName);
-
-                            if (!System.IO.File.Exists(filePathToCheck))
+                            if (d == postedFile.FileName && f.module == i.MODULE_NUMBER)
                             {
-                                using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                                string fileName = Path.GetFileName(i.MODULE_ID + "_" + postedFile.FileName);
+                                string filePathToCheck = Path.Combine(path, fileName);
+
+                                if (!System.IO.File.Exists(filePathToCheck))
                                 {
-                                    postedFile.CopyTo(stream);
-                                    uploadedFiles.Add(fileName);
+                                    using (FileStream stream = new FileStream(Path.Combine(_environment.ContentRootPath, path, fileName), FileMode.Create))
+                                    {
+                                        postedFile.CopyTo(stream);
+                                        uploadedFiles.Add(fileName);
+                                    }
                                 }
                             }
-
                         }
                     }
-              
+                }
                 Response<string> response = new Response<string>();
                 {
                     response.Succeeded = true;
@@ -312,6 +321,7 @@ namespace LMSApi.Controllers
 
             //return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourses(jsoOaylo))));
         }
+
 
 
         //[HttpPost("inserCourse")]
