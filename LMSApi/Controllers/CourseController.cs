@@ -251,11 +251,14 @@ namespace LMSApi.Controllers
         {
             var formCollection = Request.Form;
             string payload = formCollection["payload"];
+            var a = JsonConvert.DeserializeObject<Rootobject1>(payload)?.OPERATION; //to check if operation is only
+                                                                                    //to add course or add both(course and module)
+          
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
             List<int> res = (_icourseservice.InsertCourses(data));
 
-            if (res != null)
+            if ((res != null && a== "Insert"))
             {
                 var formFile = Request.Form.Files;
 
@@ -303,8 +306,13 @@ namespace LMSApi.Controllers
                     response.ResponseMessage = "Success";
 
                 };
-                return Ok(res);
+                return Ok(res); //this will return moduleids
 
+            }
+            
+            else if (res != null)
+            {
+                return Ok(res);//this will return courseids when only course is added
             }
             else
             {
