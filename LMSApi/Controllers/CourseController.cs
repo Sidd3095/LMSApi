@@ -70,9 +70,9 @@ namespace LMSApi.Controllers
             return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourseId(COURSE_ID)));
         }
         [HttpGet("GetSearchCourse")]
-        public ActionResult<Response<List<COURSE>>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
+        public ActionResult<Response<List<COURSE>>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? APPROVER, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
-            return Ok(JsonConvert.SerializeObject(_icourseservice.GetSearch(COURSE_NAME, NO_OF_MODULES, CATEGORY, SUB_CATEGORY, LEVEL_OF_COURSE, CREATED_BY)));
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetSearch(COURSE_NAME, NO_OF_MODULES, CATEGORY, APPROVER, LEVEL_OF_COURSE, CREATED_BY)));
         }
 
         [HttpDelete("DeleteCourseById")]
@@ -253,7 +253,7 @@ namespace LMSApi.Controllers
             string payload = formCollection["payload"];
             var a = JsonConvert.DeserializeObject<Rootobject1>(payload)?.OPERATION; //to check if operation is only
                                                                                     //to add course or add both(course and module)
-          
+
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
             List<int> res = (_icourseservice.InsertCourses(data));
@@ -309,7 +309,7 @@ namespace LMSApi.Controllers
                 return Ok(res); //this will return moduleids
 
             }
-            
+
             else if (res != null)
             {
                 return Ok(res);//this will return courseids when only course is added

@@ -15,7 +15,7 @@ namespace LMSApi.IServices
         //Response<string> InsertCourse(COURSE request,COURSE_MODULE module);
         Response<List<COURSE>> GetCourse(string CREATED_BY);
         Response<COURSE> GetCourseId(int COURSE_ID);
-        Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY);
+        Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? APPROVER, string? LEVEL_OF_COURSE, string? CREATED_BY);
         Response<CommonResponse> DeleteCourse(int COURSE_ID);
        List<int> InsertCourses(RootObject<COURSE> request);
         //Response<string> insertCourse(COURSE request);

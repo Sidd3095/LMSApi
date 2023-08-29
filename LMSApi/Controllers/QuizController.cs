@@ -34,5 +34,10 @@ namespace LMSApi.Controllers
             //string b = JsonConvert.SerializeObject(root);
             return Ok(_iquizservice.InsertQuiz(root));
         }
+        [HttpPost("DeleteSingleQuestion")]
+        public ActionResult<Response<CommonResponse>> DeleteSingleQuestion(Rootobject1 root) { 
+            return Ok(_iquizservice.DeleteSingleQuestion(root)); 
+        }
+            
     }
 }

@@ -126,12 +126,13 @@ namespace LMSApi.Services
             return response;
         }
 
-        public Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string ?CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
+        public Response<List<COURSE>> GetSearch(string? COURSE_NAME, int? NO_OF_MODULES, string ?CATEGORY, string?APPROVER 
+            , string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");
 
             Response<List<COURSE>> response = new Response<List<COURSE>>();
-            var data = DbClientFactory<CourseRepo>.Instance.GetSearch(dbConn, COURSE_NAME, NO_OF_MODULES, CATEGORY, SUB_CATEGORY, LEVEL_OF_COURSE, CREATED_BY);
+            var data = DbClientFactory<CourseRepo>.Instance.GetSearch(dbConn, COURSE_NAME, NO_OF_MODULES, CATEGORY, APPROVER, LEVEL_OF_COURSE, CREATED_BY);
 
             if (data.Count > 0)
             {

@@ -8,5 +8,6 @@ namespace LMSApi.IServices
     {
         //Response<string> InsertQuiz(QUIZ_QUESTION question);
         Response<string> InsertQuiz(Rootobject1 root);
+        Response<string> DeleteSingleQuestion(Rootobject1 root);
     }
 }

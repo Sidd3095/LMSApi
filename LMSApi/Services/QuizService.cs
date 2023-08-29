@@ -35,6 +35,19 @@ namespace LMSApi.Services
             throw new NotImplementedException();
         }
 
-       
+        public Response<string> DeleteSingleQuestion(Rootobject1 root)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            var msg = DbClientFactory<QuizRepo>.Instance.DeleteSingleQuestion(dbConn, root);
+
+            Response<string> response = new Response<string>();
+            response.Succeeded = true;
+            //response.ResponseMessage = "Question deleted Successfully !";
+            response.ResponseCode = 200;
+            response.ResponseMessage = msg;
+            return response;
+        }
+
     }
 }

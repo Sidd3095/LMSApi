@@ -150,7 +150,7 @@ namespace LMSApi.Repository
         }
 
 
-        public List<COURSE> GetSearch(string dbConn, string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? SUB_CATEGORY, string? LEVEL_OF_COURSE, string? CREATED_BY)
+        public List<COURSE> GetSearch(string dbConn, string? COURSE_NAME, int? NO_OF_MODULES, string? CATEGORY, string? APPROVER, string? LEVEL_OF_COURSE, string? CREATED_BY)
         {
             try
             {
@@ -160,7 +160,7 @@ namespace LMSApi.Repository
                   new SqlParameter("@COURSE_NAME", SqlDbType.VarChar,100){ Value = COURSE_NAME },
                   new SqlParameter("@NO_OF_MODULES", SqlDbType.Int) { Value = NO_OF_MODULES },
                   new SqlParameter("@CATEGORY", SqlDbType.VarChar, 100){Value = CATEGORY },
-                  new SqlParameter("@SUB_CATEGORY", SqlDbType.VarChar, 100) { Value = SUB_CATEGORY },
+                  new SqlParameter("@APPROVER", SqlDbType.VarChar, 100) { Value = APPROVER },
                   new SqlParameter("@LEVEL_OF_COURSE", SqlDbType.VarChar, 100) { Value = LEVEL_OF_COURSE },
                   new SqlParameter("@CREATED_BY", SqlDbType.VarChar, 100) { Value = CREATED_BY }
 
@@ -242,7 +242,7 @@ namespace LMSApi.Repository
         //           new SqlParameter("@COURSE_DESCRIPTION",   SqlDbType.VarChar, 100) { Value = course.COURSE_DESCRIPTION},
         //           new SqlParameter("@NO_OF_MODULES", SqlDbType.Int) { Value = course.NO_OF_MODULES },
         //           new SqlParameter("@CATEGORY",      SqlDbType.VarChar, 100) { Value = course.CATEGORY },
-        //           new SqlParameter("@SUB_CATEGORY",    SqlDbType.VarChar, 100) { Value = course.SUB_CATEGORY },
+        //           new SqlParameter("@APPROVER",    SqlDbType.VarChar, 100) { Value = course.APPROVER },
         //           new SqlParameter("@LEVEL_OF_COURSE", SqlDbType.NVarChar, 100) { Value = course.LEVEL_OF_COURSE },
         //           new SqlParameter("@INSTRUCTOR_NAME", SqlDbType.VarChar, 100) { Value = course.INSTRUCTOR_NAME },
         //           new SqlParameter("@COURSE_OUTCOME", SqlDbType.VarChar, 100) { Value = course.COURSE_OUTCOME },
@@ -273,7 +273,7 @@ namespace LMSApi.Repository
         //           new SqlParameter("@COURSE_DESCRIPTION",   SqlDbType.VarChar, 100) { Value = course.COURSE_DESCRIPTION},
         //           new SqlParameter("@NO_OF_MODULES", SqlDbType.Int) { Value = course.NO_OF_MODULES },
         //           new SqlParameter("@CATEGORY",      SqlDbType.VarChar, 100) { Value = course.CATEGORY },
-        //           new SqlParameter("@SUB_CATEGORY",    SqlDbType.VarChar, 100) { Value = course.SUB_CATEGORY },
+        //           new SqlParameter("@APPROVER",    SqlDbType.VarChar, 100) { Value = course.APPROVER },
         //           new SqlParameter("@LEVEL_OF_COURSE", SqlDbType.NVarChar, 100) { Value = course.LEVEL_OF_COURSE },
         //           new SqlParameter("@INSTRUCTOR_NAME", SqlDbType.VarChar, 100) { Value = course.INSTRUCTOR_NAME },
         //           new SqlParameter("@COURSE_OUTCOME", SqlDbType.VarChar, 100) { Value = course.COURSE_OUTCOME },
