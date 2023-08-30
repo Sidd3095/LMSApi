@@ -220,8 +220,12 @@ namespace LMSApi.Controllers
                     long length = new System.IO.FileInfo(file).Length / 1024;
                     img.FILE_NAME = file.Split('/')[2];
                     img.FILE_SIZE = length.ToString() + "KB";
-                    img.FILE_PATH = file;
-
+                    //img.FILE_PATH = file;
+                    string baseUrl = "https://localhost:7148/"; // Replace 'port' with the actual port number
+                    /*string baseUrl = "https://etariff.jmbaxi.com/LMSAPI/";*/ // Replace 'port' with the actual port number
+                    string relativePath = file.Replace("\\", "/"); // Replace backslashes with forward slashes
+                    string fullPath = baseUrl + relativePath;
+                    img.FILE_PATH= fullPath;
                     videoFiles.Add(img);
 
                 }
@@ -286,6 +290,7 @@ namespace LMSApi.Controllers
                             {
                                 string fileName = Path.GetFileName(i.MODULE_ID + "_" + postedFile.FileName);
                                 string filePathToCheck = Path.Combine(path, fileName);
+                                string fileExtension = Path.GetExtension(fileName).ToLower();
 
                                 if (!System.IO.File.Exists(filePathToCheck))
                                 {
@@ -293,6 +298,22 @@ namespace LMSApi.Controllers
                                     {
                                         postedFile.CopyTo(stream);
                                         uploadedFiles.Add(fileName);
+                                        if (fileExtension == ".jpg" || fileExtension == ".jpeg" || fileExtension == ".png")
+                                        {
+                                            //string filePath = Path.Combine(path, fileName);
+                                            string filePath = Path.Combine("Uploads", "CourseFiles", fileName);
+
+
+                                            int MODULE_ID = i.MODULE_ID;
+                                            _icourseservice.InsertImagePath(filePath, MODULE_ID);
+                                        }
+                                        else
+                                        {
+                                            //string filePath = Path.Combine(path, fileName);
+                                            string filePath = Path.Combine("Uploads", "CourseFiles", fileName);
+                                            int MODULE_ID = i.MODULE_ID;
+                                            _icourseservice.InsertVideoPath(filePath, MODULE_ID);
+                                        }
                                     }
                                 }
                             }
@@ -330,7 +351,12 @@ namespace LMSApi.Controllers
             //return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourses(jsoOaylo))));
         }
 
-
+        [HttpGet("getMasterDetails")]
+        public  ActionResult<Response<List<MASTER_DETAILS>>> GetMasterDetails(string STR)
+        {
+            
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetMasterDetails(STR)));
+        }
 
         //[HttpPost("inserCourse")]
         //public ActionResult<Response<CommonResponse>> insertCourse(COURSE request)

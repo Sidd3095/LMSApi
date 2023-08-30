@@ -229,7 +229,50 @@ namespace LMSApi.Repository
             }
         }
 
+        public void InsertImagePath(string connstring, string filepath, int MODULE_ID)
+        {
+            SqlParameter[] parameters =
+            {
+              new SqlParameter("@OPERATION", SqlDbType.VarChar,50) { Value = "INSERT_IMAGE" },
+               new SqlParameter("@MODULE_ID", SqlDbType.Int) { Value = MODULE_ID },
+              new SqlParameter("@THUMBNAIL_PATH", SqlDbType.VarChar, 200) { Value = filepath },
+            };
 
+            SqlHelper.ExecuteProcedureReturnString(connstring, "SP_CRUD_COURSE", parameters);
+        }
+        public void InsertVideoPath(string connstring, string filepath, int MODULE_ID)
+        {
+            SqlParameter[] parameters =
+            {
+              new SqlParameter("@OPERATION", SqlDbType.VarChar,50) { Value = "INSERT_VIDEO" },
+              new SqlParameter("@MODULE_ID", SqlDbType.Int) { Value = MODULE_ID },
+              new SqlParameter("@VIDEO_PATH", SqlDbType.VarChar, 200) { Value = filepath },
+            };
+
+            SqlHelper.ExecuteProcedureReturnString(connstring, "SP_CRUD_COURSE", parameters);
+        }
+
+        public List<MASTER_DETAILS> GetMasterDetails(string dbConn, string STR)
+        {
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                  new SqlParameter("@STR", SqlDbType.VarChar, 100) { Value = STR },
+
+
+                };
+
+                DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_MASTER_DETAILS", parameters);
+                List<MASTER_DETAILS> response = SqlHelper.CreateListFromTable<MASTER_DETAILS>(dataTable);
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         //public string insertCourse(string connstring, COURSE course)
         //{
         //    try

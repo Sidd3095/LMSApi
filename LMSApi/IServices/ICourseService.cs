@@ -24,5 +24,8 @@ namespace LMSApi.IServices
         //Response<CommonResponse> DeleteModule(int MODULE_ID);
         
               Response<CommonResponse> DeleteModuleById(int COURSE_ID);
+        void InsertImagePath(string filePath, int MODULE_ID);
+        void InsertVideoPath(string filePath, int MODULE_ID);
+        Response<List<MASTER_DETAILS>> GetMasterDetails(string STR);
     }
 }

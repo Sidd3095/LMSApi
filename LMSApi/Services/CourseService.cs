@@ -113,6 +113,15 @@ namespace LMSApi.Services
                     }
 
                 }
+                if (data.Tables.Contains("Table4"))
+                {
+
+                    if (data.Tables[4].Rows.Count != 0)
+                    {
+                        course.BUSINESS = CourseRepo.GetListFromDataSet<MASTER_DETAILS>(data.Tables[4]);
+                    }
+                }
+
 
                 response.Data = course;
             }
@@ -230,7 +239,42 @@ namespace LMSApi.Services
 
 
         }
+        public void InsertImagePath(string filePath, int MODULE_ID)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
 
+            DbClientFactory<CourseRepo>.Instance.InsertImagePath(dbConn, filePath, MODULE_ID);
+        }
+        public void InsertVideoPath(string filePath, int MODULE_ID)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            DbClientFactory<CourseRepo>.Instance.InsertVideoPath(dbConn, filePath, MODULE_ID);
+        }
+
+        public Response<List<MASTER_DETAILS>> GetMasterDetails(string STR)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<List<MASTER_DETAILS>> response = new Response<List<MASTER_DETAILS>>();
+            var data = DbClientFactory<CourseRepo>.Instance.GetMasterDetails(dbConn, STR);
+
+            if (data != null)
+            {
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";
+                response.Data = data;
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+
+            return response;
+        }
         //public Response<string> insertCourse(COURSE request)
         //{
         //    string dbConn = _config.GetConnectionString("ConnectionString");

@@ -24,6 +24,7 @@ namespace LMSApi.Models
         public string UPDATED_BY { get; set; }
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
+        public List<MASTER_DETAILS> BUSINESS { get; set; } = new List<MASTER_DETAILS>();
         public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
         public List<VALUE> VALUES { get; set; } = new List<VALUE>();
        
@@ -52,6 +53,11 @@ namespace LMSApi.Models
         public string name { get; set; }
         public int module { get; set; }
     
+    }
+    public class MASTER_DETAILS
+    {
+        public int BUSINESS_ID { get; set; }
+        public string BUSINESS_NAME { get; set; }
     }
    //public class FormData
    // {
