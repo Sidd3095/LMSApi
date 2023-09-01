@@ -17,7 +17,7 @@ namespace LMSApi.Models
         public string CATEGORY { get; set; }
         public string APPROVER { get; set; }
         public string LEVEL_OF_COURSE { get; set; }
-        public string INSTRUCTOR_NAME { get; set; }
+        //public string INSTRUCTOR_NAME { get; set; }
         //public string COURSE_OUTCOME { get; set; }
         public string CREATED_BY { get; set; }
         public DateTime CREATED_DATE { get; set; }

@@ -273,6 +273,31 @@ namespace LMSApi.Repository
                 throw;
             }
         }
+
+        public List<COURSE_MODULE> GetFile(string dbConn, int moduleID)
+        {
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                  new SqlParameter("@OPERATION", SqlDbType.VarChar, 50) { Value = "GetFilesPath" },
+                  new SqlParameter("@MODULE_ID", SqlDbType.VarChar,100){ Value = moduleID },
+
+
+
+
+                };
+
+                DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_COURSE_DETAILS", parameters);
+                List<COURSE_MODULE> response = SqlHelper.CreateListFromTable<COURSE_MODULE>(dataTable);
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
         //public string insertCourse(string connstring, COURSE course)
         //{
         //    try

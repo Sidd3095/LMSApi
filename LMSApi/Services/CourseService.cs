@@ -182,11 +182,11 @@ namespace LMSApi.Services
             return response;
         }
 
-        public List<int> InsertCourses(RootObject<COURSE> request)
+        public DataSet InsertCourses(RootObject<COURSE> request)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");
-            List<int> moduleIds = new List<int>();
-            List<int> courseIds = new List<int>();
+            DataTable moduleIds = new DataTable();
+            DataTable courseIds = new DataTable();
             //int ModuleId=0;
             var data = DbClientFactory<CourseRepo>.Instance.InsertCourses(dbConn, request);
              Response<int> response = new Response<int>();
@@ -196,11 +196,12 @@ namespace LMSApi.Services
                 {
                     if (data.Tables["Table1"].Rows.Count > 0)
                     {
-                        foreach (DataRow row in data.Tables["Table1"].Rows)
-                        {
-                            int moduleId = (int)row["MODULE_ID"];
-                            moduleIds.Add(moduleId);
-                        }
+                        moduleIds = data.Tables["Table1"];
+                        //foreach (DataRow row in data.Tables["Table1"].Rows)
+                        //{
+                        //    int moduleId = (int)row["MODULE_ID"];
+                        //    moduleIds?.Add(moduleId);
+                        //}
                     }
                 }
                  if (data.Tables.Contains("Table"))
@@ -208,11 +209,12 @@ namespace LMSApi.Services
                     if (data.Tables["Table"].Rows.Count > 0)
                     {
 
-                        foreach (DataRow row in data.Tables["Table"].Rows)
-                        {
-                            int courseId = (int)row["COURSE_ID"];
-                            courseIds.Add(courseId);
-                        }
+                        courseIds = data.Tables["Table"];
+                        //foreach (DataRow row in data.Tables["Table"].Rows)
+                        //{
+                        //    int courseId = (int)row["COURSE_ID"];
+                        //    courseIds.Add(courseId);
+                        //}
                     }
                 }
 
@@ -227,16 +229,17 @@ namespace LMSApi.Services
                response.ResponseCode = 500;
                response.ResponseMessage = "No Data";
            }
-            if (moduleIds.Count>0)
-            {
-                return moduleIds;
-            }
-            else
-            {
-                return courseIds;
-            }
-            
+            //if (moduleIds.Count>0)
+            //{
+            //    return moduleIds;
+            //}
+            //else
+            //{
+            //    return courseIds;
+            //}
 
+            return data;
+           
 
         }
         public void InsertImagePath(string filePath, int MODULE_ID)
@@ -275,6 +278,33 @@ namespace LMSApi.Services
 
             return response;
         }
+
+        public Response<List<COURSE_MODULE>> GetFiles(int moduleId)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<List<COURSE_MODULE>> response = new Response<List<COURSE_MODULE>>();
+            var data = DbClientFactory<CourseRepo>.Instance.GetFile(dbConn, moduleId);
+
+            if (data != null)
+            {
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";
+                response.Data = data;
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+
+            return response;
+        }
+
+
+
         //public Response<string> insertCourse(COURSE request)
         //{
         //    string dbConn = _config.GetConnectionString("ConnectionString");

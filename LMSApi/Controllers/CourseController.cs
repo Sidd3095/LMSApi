@@ -183,22 +183,39 @@ namespace LMSApi.Controllers
         }
 
         [HttpGet("GetUploadedCourseImgAndVideo")]
-        public ActionResult<Response<List<ALL_FILES>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
+        public ActionResult<Response<List<COURSE_MODULE>>> GetUploadedCourseImgAndVideo(int MODULE_ID)
+
         {
-            //string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
-            string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetFiles(MODULE_ID)));
+            ////string[] imgArray = Directory.GetFiles("Uploads/Thumbnail/");
+            //string[] videoArray = Directory.GetFiles("Uploads/CourseFiles/");
 
 
-            List<ALL_FILES> imgFiles = new List<ALL_FILES>();//Thumbnail
-            List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
+            //List<ALL_FILES> imgFiles = new List<ALL_FILES>();//Thumbnail
+            //List<ALL_FILES> videoFiles = new List<ALL_FILES>(); //Video
 
-            Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
-            //List<string> imgList = imgArray.ToList();
-            List<string> videosList = videoArray.ToList();
+            //Response<List<ALL_FILES>> response = new Response<List<ALL_FILES>>();
+            ////List<string> imgList = imgArray.ToList();
+            //List<string> videosList = videoArray.ToList();
 
 
 
-            //foreach (var file in imgList)
+            ////foreach (var file in imgList)
+            ////{
+            ////    if (file.Contains(MODULE_ID.ToString()))
+            ////    {
+            ////        ALL_FILES img = new ALL_FILES();
+            ////        long length = new System.IO.FileInfo(file).Length / 1024;
+            ////        img.FILE_NAME = file.Split('/')[2];
+            ////        img.FILE_SIZE = length.ToString() + "KB";
+            ////        img.FILE_PATH = file;
+
+            ////        imgFiles.Add(img);
+
+            ////    }
+            ////}
+            //foreach (var file in videosList)
             //{
             //    if (file.Contains(MODULE_ID.ToString()))
             //    {
@@ -206,48 +223,36 @@ namespace LMSApi.Controllers
             //        long length = new System.IO.FileInfo(file).Length / 1024;
             //        img.FILE_NAME = file.Split('/')[2];
             //        img.FILE_SIZE = length.ToString() + "KB";
-            //        img.FILE_PATH = file;
-
-            //        imgFiles.Add(img);
+            //        //img.FILE_PATH = file;
+            //        string baseUrl = "https://localhost:7148/"; // Replace 'port' with the actual port number
+            //        /*string baseUrl = "https://etariff.jmbaxi.com/LMSAPI/";*/ // Replace 'port' with the actual port number
+            //        string relativePath = file.Replace("\\", "/"); // Replace backslashes with forward slashes
+            //        string fullPath = baseUrl + relativePath;
+            //        img.FILE_PATH= fullPath;
+            //        videoFiles.Add(img);
 
             //    }
             //}
-            foreach (var file in videosList)
-            {
-                if (file.Contains(MODULE_ID.ToString()))
-                {
-                    ALL_FILES img = new ALL_FILES();
-                    long length = new System.IO.FileInfo(file).Length / 1024;
-                    img.FILE_NAME = file.Split('/')[2];
-                    img.FILE_SIZE = length.ToString() + "KB";
-                    //img.FILE_PATH = file;
-                    string baseUrl = "https://localhost:7148/"; // Replace 'port' with the actual port number
-                    /*string baseUrl = "https://etariff.jmbaxi.com/LMSAPI/";*/ // Replace 'port' with the actual port number
-                    string relativePath = file.Replace("\\", "/"); // Replace backslashes with forward slashes
-                    string fullPath = baseUrl + relativePath;
-                    img.FILE_PATH= fullPath;
-                    videoFiles.Add(img);
 
-                }
-            }
+            //if (videoFiles.Count > 0)
+            //{
+            //    response.Succeeded = true;
+            //    response.ResponseCode = 200;
+            //    response.ResponseMessage = "Success";
+            //    response.Data = videoFiles;
 
-            if (videoFiles.Count > 0)
-            {
-                response.Succeeded = true;
-                response.ResponseCode = 200;
-                response.ResponseMessage = "Success";
-                response.Data = videoFiles;
+            //    //response.Data1 = videoFiles;
 
-                //response.Data1 = videoFiles;
+            //}
+            //else
+            //{
+            //    response.Succeeded = false;
+            //    response.ResponseCode = 500;
+            //    response.ResponseMessage = "No Data";
+            //}
+            
+         
 
-            }
-            else
-            {
-                response.Succeeded = false;
-                response.ResponseCode = 500;
-                response.ResponseMessage = "No Data";
-            }
-            return response;
         }
 
         [HttpPost("insertCourse")]
@@ -255,14 +260,27 @@ namespace LMSApi.Controllers
         {
             var formCollection = Request.Form;
             string payload = formCollection["payload"];
+            List<int> moduleIds = new List<int>();
+            Response<DataTable> response = new Response<DataTable>();
             var a = JsonConvert.DeserializeObject<Rootobject1>(payload)?.OPERATION; //to check if operation is only
                                                                                     //to add course or add both(course and module)
 
             var data = JsonConvert.DeserializeObject<RootObject<COURSE>>(payload);
 
-            List<int> res = (_icourseservice.InsertCourses(data));
-
-            if ((res != null && a== "Insert"))
+            DataSet res = _icourseservice.InsertCourses(data);
+            if (res.Tables.Contains("Table1"))
+            {
+                if (res.Tables["Table1"].Rows.Count > 0)
+                {
+                   
+                   foreach (DataRow row in res.Tables["Table1"].Rows)
+                   {
+                       int moduleId = (int)row["MODULE_ID"];
+                       moduleIds?.Add(moduleId);
+                   }
+                }
+            }
+            if ((moduleIds.Count>0 && a== "Insert"))
             {
                 var formFile = Request.Form.Files;
 
@@ -274,9 +292,15 @@ namespace LMSApi.Controllers
                 }
 
                 List<string> uploadedFiles = new List<string>();
-                for (int i = 0; i < res.Count; i++)
+                for (int i = 0; i < moduleIds.Count; i++)
                 {
-                    data.VALUES[0].MODULES[i].MODULE_ID = res[i];
+                    //data.VALUES[0].MODULES[i].MODULE_ID = moduleIds[i];
+
+
+                    if (data.VALUES[0].MODULES[i].MODULE_ID == null || data.VALUES[0].MODULES[i].MODULE_ID == 0)
+                    {
+                        data.VALUES[0].MODULES[i].MODULE_ID = moduleIds[i];
+                    }
                 }
                 foreach (var i in data.VALUES[0].MODULES)
                 {
@@ -320,24 +344,35 @@ namespace LMSApi.Controllers
                         }
                     }
                 }
-                Response<string> response = new Response<string>();
+                //Response<string> response = new Response<string>();
+                
                 {
                     response.Succeeded = true;
                     response.ResponseCode = 200;
                     response.ResponseMessage = "Success";
+                    response.Data = res.Tables["Table"];
+                    response.Data1 = res.Tables["Table1"];
 
                 };
-                return Ok(res); //this will return moduleids
+                return Ok(JsonConvert.SerializeObject(response));
 
             }
 
-            else if (res != null)
+            else if (a == "InsertOnlyCourse")
             {
-                return Ok(res);//this will return courseids when only course is added
+                {
+                    response.Succeeded = true;
+                    response.ResponseCode = 200;
+                    response.ResponseMessage = "Success";
+                    response.Data = res.Tables["Table"];
+                    response.Data1 = res.Tables["Table1"];
+
+                };
+                return Ok(JsonConvert.SerializeObject(response));
             }
             else
             {
-                Response<string> response = new Response<string>();
+                
                 {
                     response.Succeeded = false;
                     response.ResponseCode = 500;
