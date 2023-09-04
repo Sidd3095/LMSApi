@@ -252,19 +252,19 @@ namespace LMSApi.Repository
             SqlHelper.ExecuteProcedureReturnString(connstring, "SP_CRUD_COURSE", parameters);
         }
 
-        public List<MASTER_DETAILS> GetMasterDetails(string dbConn, string STR)
+        public List<BUSINESS_DETAILS> GetBusinessDetails(string dbConn, string STR)
         {
             try
             {
                 SqlParameter[] parameters =
                 {
-                  new SqlParameter("@STR", SqlDbType.VarChar, 100) { Value = STR },
+                  new SqlParameter("@STR", SqlDbType.VarChar, 100) { Value = "BUSINESS_DETAILS" },
 
 
                 };
 
                 DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_MASTER_DETAILS", parameters);
-                List<MASTER_DETAILS> response = SqlHelper.CreateListFromTable<MASTER_DETAILS>(dataTable);
+                List<BUSINESS_DETAILS> response = SqlHelper.CreateListFromTable<BUSINESS_DETAILS>(dataTable);
 
                 return response;
             }
@@ -292,6 +292,119 @@ namespace LMSApi.Repository
                 List<COURSE_MODULE> response = SqlHelper.CreateListFromTable<COURSE_MODULE>(dataTable);
 
                 return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public string AssignCourse(string connstring, RootObject<ASSIGN_COURSE> assigncourse)
+        {
+            try
+            {
+
+
+                string payload = JsonConvert.SerializeObject(assigncourse);
+                SqlParameter[] parameters =
+                 {
+                   new SqlParameter("@Json",payload)
+
+
+                 };
+                var ID = SqlHelper.ExecuteProcedureReturnString(connstring, "JCRUD_ASSIGN_COURSE", parameters);
+
+                return ID;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<ASSIGN_COURSE> GetCourseEmployeeDetails(string dbConn, string? OPERATION, int? COURSE_EMPLOYEE_ID, string? EMPLOYEE_NAME, string? COURSE_NAME, string ASSIGNED_BY, DateTime? START_TIME, DateTime? END_TIME, string? STATUS)
+        {
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                  new SqlParameter("@OPERATION", SqlDbType.VarChar, 100) { Value = "Search_GetGridData" },
+                  new SqlParameter("@COURSE_EMPLOYEE_ID", SqlDbType.Int) { Value = COURSE_EMPLOYEE_ID },
+                   new SqlParameter("@EMPLOYEE_NAME", SqlDbType.VarChar, 100) { Value = EMPLOYEE_NAME },
+                  new SqlParameter("@COURSE_NAME", SqlDbType.VarChar, 100) { Value = COURSE_NAME },
+                  new SqlParameter("@ASSIGNED_BY", SqlDbType.VarChar, 100) { Value = ASSIGNED_BY },
+                  new SqlParameter("@START_TIME", SqlDbType.DateTime) { Value = START_TIME },
+                   new SqlParameter("@END_TIME", SqlDbType.DateTime) { Value =END_TIME },
+
+
+                };
+
+                DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_COURSE_EMPLOYEE_DETAILS", parameters);
+                List<ASSIGN_COURSE> response = SqlHelper.CreateListFromTable<ASSIGN_COURSE>(dataTable);
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public List<EMPLOYEE_DETAILS> GetEmployeeDropDown(string dbConn, string STR)
+        {
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                  new SqlParameter("@STR", SqlDbType.VarChar, 100) { Value = "EMPLOYEE_DETAILS" },
+
+
+                };
+
+                DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_MASTER_DETAILS", parameters);
+                List<EMPLOYEE_DETAILS> response = SqlHelper.CreateListFromTable<EMPLOYEE_DETAILS>(dataTable);
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public DataTable GetCourseDropDown(string dbConn, string STR)
+        {
+            try
+            {
+                SqlParameter[] parameters =
+                {
+                  new SqlParameter("@STR", SqlDbType.VarChar, 100) { Value = "GET_COURSES_DROPDOWN" },
+
+
+                };
+
+                DataTable dataTable = SqlHelper.ExtecuteProcedureReturnDataTable(dbConn, "GET_MASTER_DETAILS", parameters);
+                DataTable response = (dataTable);
+
+                return response;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+        public string DeleteAssignedCourse(string connstring, RootObject<ASSIGN_COURSE> assigncourse)
+        {
+            try
+            {
+
+
+                string payload = JsonConvert.SerializeObject(assigncourse);
+                SqlParameter[] parameters =
+                 {
+                   new SqlParameter("@Json",payload)
+
+
+                 };
+                var str = SqlHelper.ExecuteProcedureReturnString(connstring, "JCRUD_ASSIGN_COURSE", parameters);
+
+                return str;
             }
             catch (Exception)
             {

@@ -26,7 +26,14 @@ namespace LMSApi.IServices
               Response<CommonResponse> DeleteModuleById(int COURSE_ID);
         void InsertImagePath(string filePath, int MODULE_ID);
         void InsertVideoPath(string filePath, int MODULE_ID);
-        Response<List<MASTER_DETAILS>> GetMasterDetails(string STR);
+        Response<List<BUSINESS_DETAILS>> GetBusinessDetails(string STR);
         Response<List<COURSE_MODULE>> GetFiles(int moduleId);
+        Response<CommonResponse> AssignCourse(RootObject<ASSIGN_COURSE> request);
+        Response<List<ASSIGN_COURSE>> GetCourseEmployeeDetails(string? OPERATION, int? COURSE_EMPLOYEE_ID, string? EMPLOYEE_NAME, string?
+            COURSE_NAME, string ASSIGNED_BY, DateTime? START_TIME, DateTime? END_TIME, string? STATUS);
+        Response<List<EMPLOYEE_DETAILS>> GetEmployeeDropDown(string STR);
+        DataTable GetCourseDropDown(string STR);
+        Response<CommonResponse> DeleteAssignedCourse(RootObject<ASSIGN_COURSE> request);
+
     }
 }

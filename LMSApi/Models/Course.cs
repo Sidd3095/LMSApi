@@ -24,7 +24,7 @@ namespace LMSApi.Models
         public string UPDATED_BY { get; set; }
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
-        public List<MASTER_DETAILS> BUSINESS { get; set; } = new List<MASTER_DETAILS>();
+        public List<BUSINESS_DETAILS> BUSINESS { get; set; } = new List<BUSINESS_DETAILS>();
         public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
         public List<VALUE> VALUES { get; set; } = new List<VALUE>();
        
@@ -54,21 +54,45 @@ namespace LMSApi.Models
         public int module { get; set; }
     
     }
-    public class MASTER_DETAILS
+    public class BUSINESS_DETAILS
     {
         public int BUSINESS_ID { get; set; }
         public string BUSINESS_NAME { get; set; }
     }
-   //public class FormData
-   // {
-        
-   //     string payload { get; set; }
-        
-   //     IFormFileCollection? images { get; set; }
+    public class EMPLOYEE_DETAILS {
+        public int EMPLOYEE_ID { get; set; }
+        public string EMPLOYEE_NAME { get; set; } 
+        public string LOCATION { get; set; } 
+        public string DEPARTMENT { get; set; }
+        public string EMPLOYEE_CODE { get; set; }
+        public string COMPANY_NAME { get; set; } }
+    public class ASSIGN_COURSE { 
+        public int COURSE_ID { get; set; }
+        public string? COURSE_NAME { get; set; }
+        public int COURSE_EMPLOYEE_ID { get; set; }
+        public int EMPLOYEE_ID { get; set; }
+        public string? EMPLOYEE_NAME { get; set; }
+        public string? ASSIGNED_BY { get; set; } 
+        public DateTime? ASSIGNED_DATE { get; set; } 
+        public DateTime   START_TIME { get; set; }
+        public DateTime END_TIME { get; set; } 
+        public string? STATUS { get; set; }
+        public string? LOCATION { get; set; }
+        public string? COMPANY_NAME { get; set; }
+    }
 
-       
-   //     IFormFileCollection? videos { get; set; }
-   // }
+}
+
+    //public class FormData
+    // {
+
+    //     string payload { get; set; }
+
+    //     IFormFileCollection? images { get; set; }
+
+
+    //     IFormFileCollection? videos { get; set; }
+    // }
     //public class IdeaDto{
     //    IFormFile file { get; set; }
     //    public string payload { get; set; }
@@ -81,4 +105,4 @@ namespace LMSApi.Models
     //public class CourseGetByID {
     //    public int COURSE_ID { get; set; }
     //}
-}
+

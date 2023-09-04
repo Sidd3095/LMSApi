@@ -386,13 +386,57 @@ namespace LMSApi.Controllers
             //return Ok(JsonConvert.SerializeObject((_icourseservice.InsertCourses(jsoOaylo))));
         }
 
-        [HttpGet("getMasterDetails")]
-        public  ActionResult<Response<List<MASTER_DETAILS>>> GetMasterDetails(string STR)
+        [HttpGet("getBusinessDetails")]
+        public  ActionResult<Response<List<BUSINESS_DETAILS>>> GetBusinessDetails(string STR)
         {
             
-            return Ok(JsonConvert.SerializeObject(_icourseservice.GetMasterDetails(STR)));
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetBusinessDetails(STR)));
         }
 
+        [HttpPost("AssignCourse")]
+        public ActionResult<Response<CommonResponse>> AssignCourse(RootObject<ASSIGN_COURSE> request)
+        {
+            return Ok(JsonConvert.SerializeObject((_icourseservice.AssignCourse(request))));
+        }
+        [HttpGet("GetCourseEmployeeDetails")]
+        public ActionResult<Response<List<ASSIGN_COURSE>>> GetCourseEmployeeDetails(string? OPERATION, int? COURSE_EMPLOYEE_ID, string?  EMPLOYEE_NAME, string? COURSE_NAME, string ASSIGNED_BY, DateTime? START_TIME, DateTime? END_TIME,string? STATUS)
+        {
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetCourseEmployeeDetails( OPERATION,  COURSE_EMPLOYEE_ID, EMPLOYEE_NAME, COURSE_NAME, ASSIGNED_BY, START_TIME, END_TIME, STATUS)));
+        }
+
+        [HttpGet("getEmployeeDropDown")]
+        public ActionResult<Response<List<EMPLOYEE_DETAILS>>> GetEmployeeDropDown(string STR)
+        {
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.GetEmployeeDropDown(STR)));
+        }
+        [HttpGet("getCourseDropDown")]
+        public ActionResult <Response<DataTable>> GetCourseDropDown(string STR)
+        {
+            Response<DataTable> response = new Response<DataTable>();
+            DataTable res = _icourseservice.GetCourseDropDown(STR);
+            if (res != null)
+            {
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";
+                response.Data = res;
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+            return Ok(JsonConvert.SerializeObject(response));
+        }
+        [HttpPost("deleteAssignedCourse")]
+        public ActionResult<Response<CommonResponse>> DeleteAssignedCourse(RootObject<ASSIGN_COURSE> request)
+        {
+
+            return Ok(JsonConvert.SerializeObject(_icourseservice.DeleteAssignedCourse(request)));
+        }
         //[HttpPost("inserCourse")]
         //public ActionResult<Response<CommonResponse>> insertCourse(COURSE request)
         //{
