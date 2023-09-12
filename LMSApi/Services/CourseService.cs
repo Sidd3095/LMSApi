@@ -16,6 +16,7 @@ using System.Data;
 using NPOI.SS.Formula.Functions;
 using System.Reflection;
 
+
 namespace LMSApi.Services
 {
     public class CourseService : ICourseService
@@ -118,7 +119,7 @@ namespace LMSApi.Services
 
                     if (data.Tables[4].Rows.Count != 0)
                     {
-                        course.BUSINESS = CourseRepo.GetListFromDataSet<MASTER_DETAILS>(data.Tables[4]);
+                        course.BUSINESS = CourseRepo.GetListFromDataSet<BUSINESS_DETAILS>(data.Tables[4]);
                     }
                 }
 
@@ -255,12 +256,12 @@ namespace LMSApi.Services
             DbClientFactory<CourseRepo>.Instance.InsertVideoPath(dbConn, filePath, MODULE_ID);
         }
 
-        public Response<List<MASTER_DETAILS>> GetMasterDetails(string STR)
+        public Response<List<BUSINESS_DETAILS>> GetBusinessDetails(string STR)
         {
             string dbConn = _config.GetConnectionString("ConnectionString");
 
-            Response<List<MASTER_DETAILS>> response = new Response<List<MASTER_DETAILS>>();
-            var data = DbClientFactory<CourseRepo>.Instance.GetMasterDetails(dbConn, STR);
+            Response<List<BUSINESS_DETAILS>> response = new Response<List<BUSINESS_DETAILS>>();
+            var data = DbClientFactory<CourseRepo>.Instance.GetBusinessDetails(dbConn, STR);
 
             if (data != null)
             {
@@ -389,8 +390,115 @@ namespace LMSApi.Services
             return response;
         }
 
+        public Response<CommonResponse> AssignCourse(RootObject<ASSIGN_COURSE> request)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+            Response<CommonResponse> response = new Response<CommonResponse>();
+            var res=DbClientFactory<CourseRepo>.Instance.AssignCourse(dbConn, request);
 
+            if (res != null)
+            {
+                
+                response.Succeeded = true;
+                response.ResponseMessage = "Course assigned Successfully.";
+                response.ResponseCode = 200;
+                return response;
+
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+                return response;
+            }
+           
+        }
+        public Response<List<ASSIGN_COURSE>> GetCourseEmployeeDetails(string? OPERATION, int? COURSE_EMPLOYEE_ID, string? EMPLOYEE_NAME, string? COURSE_NAME, string ASSIGNED_BY, DateTime? START_TIME, DateTime? END_TIME, string? STATUS)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<List<ASSIGN_COURSE>> response = new Response<List<ASSIGN_COURSE>>();
+            var data = DbClientFactory<CourseRepo>.Instance.GetCourseEmployeeDetails(dbConn, OPERATION, COURSE_EMPLOYEE_ID,EMPLOYEE_NAME, COURSE_NAME, ASSIGNED_BY, START_TIME, END_TIME, STATUS);
+
+            if (data != null)
+            {
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";
+                response.Data = data;
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+
+            return response;
+        }
+        public Response<List<EMPLOYEE_DETAILS>> GetEmployeeDropDown(string STR)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+
+            Response<List<EMPLOYEE_DETAILS>> response = new Response<List<EMPLOYEE_DETAILS>>();
+            var data = DbClientFactory<CourseRepo>.Instance.GetEmployeeDropDown(dbConn, STR);
+
+            if (data != null)
+            {
+                response.Succeeded = true;
+                response.ResponseCode = 200;
+                response.ResponseMessage = "Success";
+                response.Data = data;
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+            }
+
+            return response;
+        }
+        public DataTable GetCourseDropDown(string STR)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+            // DataTable response = new  DataTable();
+            //DataTable response = new DataTable();
+            //Response DataTable response = new Response DataTable();
+            var data = DbClientFactory<CourseRepo>.Instance.GetCourseDropDown(dbConn, STR);
+
+            
+
+            return data;
+        }
+        public Response<CommonResponse> DeleteAssignedCourse(RootObject<ASSIGN_COURSE> request)
+        {
+            string dbConn = _config.GetConnectionString("ConnectionString");
+            Response<CommonResponse> response = new Response<CommonResponse>();
+            var res = DbClientFactory<CourseRepo>.Instance.AssignCourse(dbConn, request);
+
+            if (res == "Record Deleted Successfully")
+            {
+
+                response.Succeeded = true;
+                response.ResponseMessage = "Record Deleted Successfully";
+                response.ResponseCode = 200;
+                return response;
+
+            }
+            else
+            {
+                response.Succeeded = false;
+                response.ResponseCode = 500;
+                response.ResponseMessage = "No Data";
+                return response;
+            }
+
+        }
     }
+   
+
 }
 
 

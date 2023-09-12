@@ -24,7 +24,7 @@ namespace LMSApi.Models
         public string UPDATED_BY { get; set; }
         public DateTime UPDATED_DATE { get; set; }
         public bool STATUS { get; set; }
-        public List<MASTER_DETAILS> BUSINESS { get; set; } = new List<MASTER_DETAILS>();
+        public List<BUSINESS_DETAILS> BUSINESS { get; set; } = new List<BUSINESS_DETAILS>();
         public List<COURSE_MODULE> MODULES { get; set; } = new List<COURSE_MODULE>();
         public List<VALUE> VALUES { get; set; } = new List<VALUE>();
        
@@ -54,21 +54,73 @@ namespace LMSApi.Models
         public int module { get; set; }
     
     }
-    public class MASTER_DETAILS
+    public class BUSINESS_DETAILS
     {
         public int BUSINESS_ID { get; set; }
         public string BUSINESS_NAME { get; set; }
     }
-   //public class FormData
-   // {
-        
-   //     string payload { get; set; }
-        
-   //     IFormFileCollection? images { get; set; }
+    public class EMPLOYEE_DETAILS {
+        public int EMPLOYEE_I_ID { get; set; }
+        public int EMPLOYEE_ID { get; set; }
+        public string EMPLOYEE_NAME { get; set; } 
+        public string LOCATION { get; set; } 
+        public string DEPARTMENT { get; set; }
+        public string EMPLOYEE_CODE { get; set; }
+        public string COMPANY_NAME { get; set; }
+        public double EMPLOYEE_PHONE_NO { get; set; }
+        public string EMPLOYEE_TYPE { get; set; }
+        public string EMPLOYMENT_STATUS { get; set; }
 
-       
-   //     IFormFileCollection? videos { get; set; }
-   // }
+        public string EMPLOYEE_DESIGNATION { get; set; }
+        public string REPORTING_MANAGER { get; set; }
+
+        public int REPORTING_MANAGER_ID { get; set; }
+        public DateTime EMPLOYEE_JOINING_DATE { get; set; }
+        public string DATE_OF_RESIGNATION { get; set; }
+        public string DATE_OF_EXIT { get; set; }
+        public int HOD_ID { get; set; }
+        public string HOD { get; set; }
+
+        public string PANCARD { get; set; }
+        public int FEDERATION_ID { get; set; }
+        public List<ROLE> ROLE { get; set; } = new List<ROLE>();
+
+    }
+    public class ROLE
+    {
+        
+        public String? ROLE_CODE { get; set; }
+    }
+
+}
+public class ASSIGN_COURSE { 
+        public int COURSE_ID { get; set; }
+        public string? COURSE_NAME { get; set; }
+        public int COURSE_EMPLOYEE_ID { get; set; }
+        public int EMPLOYEE_ID { get; set; }
+        public string? EMPLOYEE_NAME { get; set; }
+        public string? ASSIGNED_BY { get; set; } 
+        public DateTime? ASSIGNED_DATE { get; set; } 
+        public DateTime   START_TIME { get; set; }
+        public DateTime END_TIME { get; set; } 
+        public string? STATUS { get; set; }
+        public string? LOCATION { get; set; }
+        public string? COMPANY_NAME { get; set; }
+        public int EVALUATOR_ID { get; set; }
+        public string? EVALUATOR_NAME { get; set; }
+
+}
+
+    //public class FormData
+    // {
+
+    //     string payload { get; set; }
+
+    //     IFormFileCollection? images { get; set; }
+
+
+    //     IFormFileCollection? videos { get; set; }
+    // }
     //public class IdeaDto{
     //    IFormFile file { get; set; }
     //    public string payload { get; set; }
@@ -81,4 +133,4 @@ namespace LMSApi.Models
     //public class CourseGetByID {
     //    public int COURSE_ID { get; set; }
     //}
-}
+
